@@ -4,6 +4,30 @@ Cada cambio a CLAUDE.md, agentes, rúbrica, comandos o design system sube versi�
 `log.json` registra con qué versión se ejecutó cada tarea, para saber si una
 mejora vino del harness o de la tarea.
 
+## v0.2.3 · Story points
+- Brief pide story points; `/cerrar` los registra en `log.json` (campo nuevo
+  `story_points`); `/estado` compara horas por story point contra el baseline
+  y avisa si el baseline no tiene horas.
+
+## v0.2.2 · Calibración genérica y baseline
+- `rubric/calibration/`: 3 casos genéricos escritos por el agente (Plataforma 2,
+  Ataca la métrica 3, Consistencia DS 4), marcados "CASO GENÉRICO". Reemplazar
+  por casos reales.
+- Evaluator: ignora `README.md` de calibración y trata los casos genéricos como
+  referencia de escala, no como criterio humano.
+- `baseline/tareas-manuales.json`: 3 tareas con story points (campo nuevo
+  `story_points`); horas y rondas en null.
+
+## v0.2.1 · Estructura, render y Mobbin
+- Estructura de carpetas restaurada (la subida por web la había aplanado).
+- `scripts/render.js`: render con el Playwright del entorno, todas las
+  versiones × viewports × temas en una llamada; reporta scroll horizontal y
+  errores JS. Reemplaza `npx playwright install` en el evaluator.
+- Designer: herramientas `mcp__Mobbin__search_*` (antes `mcp__mobbin`, que no
+  coincidía con el conector), búsqueda en modo `deep` y revisión de cada imagen.
+- `docs/setup.md`: Mobbin entra como conector de claude.ai; `.mcp.json` no
+  funciona detrás del proxy de la nube.
+
 ## v0.2.0 · Chili's DS
 - `design-system/` generado desde Figma "Prueba - Chilis DS" v1.2.0:
   tokens.json, tokens.css (Light/Dark, Web/Tablet), components.css (26 componentes),

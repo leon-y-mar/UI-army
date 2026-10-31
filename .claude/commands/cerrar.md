@@ -25,6 +25,7 @@ Cierra la tarea `$ARGUMENTS`:
      "tarea": "",
      "fecha_cierre": "",
      "harness_version": "",
+     "story_points": 0,
      "horas_hasta_primera_review": 0,
      "horas_humano": 0,
      "iteraciones_loop": 0,
@@ -40,7 +41,8 @@ Cierra la tarea `$ARGUMENTS`:
      "render_disponible": true
    }
    ```
-   Los valores salen de `review.md`, `score.json` y `evaluations/`.
+   Los valores salen de `brief.md` (story_points), `review.md`, `score.json`
+   y `evaluations/`.
    Si un dato no existe, usa `null`, nunca un estimado.
 5. Muestra los learnings propuestos y pregunta cuáles aprobar.
    Solo agrega a `memory/learnings.md` los que el humano apruebe
