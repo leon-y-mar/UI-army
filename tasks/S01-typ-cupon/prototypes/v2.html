@@ -6,9 +6,10 @@ hipotesis: Si la TYP confirma primero que la compra salió bien y el cupón vive
 referencia: https://mobbin.com/screens/557a8608-5950-4147-98fe-2d8ff68ee2fa (Shop) · https://mobbin.com/screens/79f7d7bd-72d2-44fa-a407-d89f1db4176b (Typeform) · https://mobbin.com/screens/9b8bc8b0-e5da-4daf-bf22-0e00f943e140 (Adobe)
 patron-base: Reutiliza el layout de Ecommerce/Menú (contenido a la izquierda + panel lateral persistente a la derecha), pero el panel deja de ser "Tu pedido" con Checkout y pasa a ser "Tu cupón" con "Copiar código" como única primaria. En 390 el panel se apila entre la confirmación y el detalle del pedido.
 trade-off: El cupón comparte la pantalla con la confirmación y el detalle: pesa menos visualmente que en un bloque héroe, y en 390 el detalle del pedido queda bajo el fold.
-componentes-ds: ds-header, ds-logo, ds-icon, ds-alert (boxed success, inline success, inline error, boxed loading), ds-button (offset red lg, outlined blue lg, link blue sm), ds-price, ds-cart-item (solo lectura, sin ds-quantity), ds-accordion (ranch), ds-chip y ds-check (solo controles del prototipo), estilos de texto ds-h2/ds-h4/ds-h5/ds-label-sm/ds-p-*
-gaps-ds: Cupón/Ticket con copiar · feedback "copiado" (toast) · resumen de pedido de solo lectura (Cart Summary sin Checkout) · campo de código copiable de solo lectura · patrón TYP desktop + mobile 390 · ícono copiar/correo (ver solicitudes-ds.md, 2026-10-31 · S01-typ-cupon)
-revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágenes placeholder en Cart Item · uso de Dirk (ds-price + ds-h2 en el valor del cupón) · íconos faltantes (copiar, correo) resueltos con texto
+iteracion-2: Se quita la regla :has() que rompía el grid en 390 (sin-cupon): el panel ya no se oculta, cambia de contenido · en sin-cupon el panel explica desde qué monto se gana el cupón (sin tercio vacío en 1440) · la confirmación incluye el total pagado antes del cupón (confirmar primero, también en 390) · links con área táctil de 44 px · cargando avisa que el cupón llega al correo · nuevo estado error-cupon con Reintentar.
+componentes-ds: ds-header, ds-logo, ds-icon, ds-alert (boxed success, inline success, inline error, boxed loading, boxed error), ds-button (offset red lg, outlined blue lg, link blue sm), ds-price, ds-cart-item (solo lectura, sin ds-quantity), ds-accordion (ranch), ds-chip y ds-check (solo controles del prototipo), estilos de texto ds-h2/ds-h4/ds-h5/ds-label-sm/ds-p-*
+gaps-ds: Cupón/Ticket con copiar · feedback "copiado" (toast) · resumen de pedido de solo lectura (Cart Summary sin Checkout) · campo de código copiable de solo lectura · patrón TYP desktop + mobile 390 · ícono copiar/correo · Button Link sin área táctil mínima (ver solicitudes-ds.md, 2026-10-31 · S01-typ-cupon)
+revision-humana: Umbral "más de S/ 80.00" (¿subtotal o total con delivery?) a confirmar con negocio · Layout Mobile 390 del ecommerce (no existe en Figma) · imágenes placeholder en Cart Item · uso de Dirk (ds-price + ds-h2 en el valor del cupón) · íconos faltantes (copiar, correo) resueltos con texto
 -->
 <!doctype html>
 <html lang="es-PE">
@@ -38,9 +39,12 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
   .panel { grid-area: panel; position: sticky; top: var(--sp-24); display: flex; flex-direction: column; gap: var(--sp-16);
     padding: var(--sp-24); background: var(--color-bg-surface); border-radius: var(--br-16); }
   .panel h2, .panel h3, .panel p { margin: 0; }
-  /* Compra < S/ 80.00: sin panel de cupón, el contenido ocupa el ancho */
-  .layout:has(> .panel[hidden]) { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); grid-template-areas: "confirm confirm" "details details"; }
-  .layout:has(> .panel[hidden]) .details, .layout:has(> .panel[hidden]) .confirm { max-width: calc(var(--layout-max-content) * 2 / 3); }
+  /* El panel nunca se oculta: en compras de S/ 80.00 o menos cambia de contenido (explica cómo ganar el cupón) */
+  /* Área táctil mínima para Button Link (gap DS): el envoltorio es el objetivo táctil; la instancia ds-button no se toca */
+  .tap { display: inline-flex; align-items: center; min-height: var(--size-touch-min); text-decoration: none; }
+  .note { display: flex; gap: var(--sp-8); align-items: flex-start; }
+  .state { display: flex; flex-direction: column; gap: var(--sp-12); }
+  .state > .ds-button { align-self: stretch; }
 
   .panel__head { display: flex; flex-direction: column; gap: var(--sp-4); }
   .code { display: flex; flex-direction: column; gap: var(--sp-4); padding: var(--sp-12) var(--sp-16); background: var(--color-bg-canvas); border-radius: var(--br-8); }
@@ -101,19 +105,30 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
           <span>Pedido confirmado y pagado. Te enviamos el comprobante a <span class="nowrap">andrea.rojas@gmail.com</span>.</span>
         </div>
         <h1 id="titulo" class="ds-h2">¡Gracias, Andrea!</h1>
-        <p class="ds-p-lg-500">Tu pedido <strong class="nowrap">N.º CH-284715</strong> llega hoy entre <strong class="nowrap">8:15 y 8:35 PM</strong>.</p>
+        <p class="ds-p-lg-500">Tu pedido <strong class="nowrap">N.º CH-284715</strong> llega hoy entre <strong class="nowrap">8:15 y 8:35 PM</strong>. Pagaste <strong class="nowrap" data-show="invitado logueado cargando error-cupon">S/ 96.40</strong><strong class="nowrap" data-show="sin-cupon">S/ 67.50</strong> con Visa terminada en 4821.</p>
       </section>
 
       <!-- 2 · Panel del cupón (solo con compra ≥ S/ 80.00) -->
-      <aside class="panel" aria-labelledby="cupon-titulo" data-show="invitado logueado cargando">
+      <aside class="panel" aria-labelledby="cupon-titulo">
         <div class="panel__head">
-          <p class="ds-label-sm">Regalo por tu compra</p>
-          <h2 id="cupon-titulo" class="ds-h5">Tu cupón para el próximo pedido</h2>
+          <p class="ds-label-sm"><span data-show="invitado logueado cargando error-cupon">Regalo por tu compra</span><span data-show="sin-cupon">Para tu próximo pedido</span></p>
+          <h2 id="cupon-titulo" class="ds-h5"><span data-show="invitado logueado cargando error-cupon">Tu cupón para el próximo pedido</span><span data-show="sin-cupon">Gana un cupón de descuento</span></h2>
         </div>
 
         <div class="ds-alert ds-alert--boxed ds-alert--loading" role="status" data-show="cargando">
           <span class="ds-icon" data-icon="loading" aria-hidden="true"></span>
-          <span>Estamos creando tu cupón personal. Tarda unos segundos; no cierres esta página.</span>
+          <span>Estamos creando tu cupón personal. Tarda unos segundos. Si cierras esta página no lo pierdes: también te llega a andrea.rojas@gmail.com.</span>
+        </div>
+        <div class="state" data-show="error-cupon">
+          <div class="ds-alert ds-alert--boxed ds-alert--error" role="alert">
+            <span class="ds-icon" data-icon="error" aria-hidden="true"></span>
+            <span>No pudimos crear tu cupón en este momento. Tu pedido sigue confirmado y el cupón no se pierde: te lo enviamos a andrea.rojas@gmail.com apenas esté listo.</span>
+          </div>
+          <button id="btn-reintentar" class="ds-button ds-button--offset ds-button--red ds-button--lg" type="button">Reintentar</button>
+        </div>
+        <div class="state" data-show="sin-cupon">
+          <p class="note ds-p-md-500"><span class="ds-icon" data-icon="info" aria-hidden="true"></span><span>Este pedido no generó cupón. En compras de más de <strong class="nowrap">S/ 80.00</strong> te regalamos un cupón personal de descuento para tu siguiente pedido web.</span></p>
+          <p class="ds-p-sm-500">Lo verás en esta pantalla apenas pagues y también te llegará a tu correo con el comprobante.</p>
         </div>
 
         <div class="panel__head" data-show="invitado logueado">
@@ -141,18 +156,19 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
           <span>No pudimos copiar el código. Lo dejamos seleccionado: cópialo manualmente o búscalo en tu correo.</span>
         </div>
 
-        <div class="recover" data-show="invitado cargando">
+        <div class="recover" data-show="invitado cargando error-cupon">
           <h3 class="ds-label-sm">Cómo recuperarlo después</h3>
           <ul class="ds-p-sm-500">
             <li><span class="ds-icon ds-icon--xs" data-icon="checkmark" aria-hidden="true"></span><span>Llega a <strong>andrea.rojas@gmail.com</strong> con tu comprobante.</span></li>
             <li><span class="ds-icon ds-icon--xs" data-icon="checkmark" aria-hidden="true"></span><span>En <strong>Seguir mi pedido</strong>, con el n.º CH-284715 y tu correo.</span></li>
           </ul>
-          <div class="row"><a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Crear cuenta y guardarlo</a></div>
+          <p class="ds-p-sm-500">Con una cuenta queda en <strong>Mis cupones</strong>, se aplica solo al pagar y te avisamos antes de que venza.</p>
+          <div class="row"><a href="#" class="tap"><span class="ds-button ds-button--link ds-button--blue ds-button--sm">Crear cuenta y guardarlo</span></a></div>
         </div>
         <div class="recover" data-show="logueado">
           <h3 class="ds-label-sm">Guardado en tu cuenta</h3>
           <p class="ds-p-sm-500">Lo encuentras en <strong>Mi cuenta › Mis cupones</strong> y te lo ofrecemos al pagar tu próximo pedido.</p>
-          <div class="row"><a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Ver mis cupones</a></div>
+          <div class="row"><a href="#" class="tap"><span class="ds-button ds-button--link ds-button--blue ds-button--sm">Ver mis cupones</span></a></div>
         </div>
 
         <div class="ds-accordion" data-show="invitado logueado">
@@ -177,12 +193,12 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
           <div><dt class="ds-label-sm">Pago</dt><dd>Visa terminada en 4821</dd></div>
         </dl>
         <div>
-          <div class="ds-cart-item" data-show="invitado logueado cargando">
+          <div class="ds-cart-item" data-show="invitado logueado cargando error-cupon">
             <div class="ds-cart-item__image" role="img" aria-label="Foto de Big Mouth Bites"></div>
             <div class="ds-cart-item__details"><p class="ds-cart-item__name">Big Mouth Bites</p><p class="ds-cart-item__mods">+ Extra tocino · Cant. 1</p></div>
             <span class="ds-price ds-price--sm">S/ 42.90</span>
           </div>
-          <div class="ds-cart-item" data-show="invitado logueado cargando">
+          <div class="ds-cart-item" data-show="invitado logueado cargando error-cupon">
             <div class="ds-cart-item__image" role="img" aria-label="Foto de Fajitas de pollo"></div>
             <div class="ds-cart-item__details"><p class="ds-cart-item__name">Fajitas de pollo</p><p class="ds-cart-item__mods">− Sin cebolla · Cant. 1</p></div>
             <span class="ds-price ds-price--sm">S/ 44.90</span>
@@ -199,13 +215,13 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
           </div>
         </div>
         <div class="totals ds-p-md-500">
-          <div class="totals__row"><span>Subtotal</span><span class="ds-price ds-price--sm" data-show="invitado logueado cargando">S/ 87.80</span><span class="ds-price ds-price--sm" data-show="sin-cupon">S/ 58.90</span></div>
+          <div class="totals__row"><span>Subtotal</span><span class="ds-price ds-price--sm" data-show="invitado logueado cargando error-cupon">S/ 87.80</span><span class="ds-price ds-price--sm" data-show="sin-cupon">S/ 58.90</span></div>
           <div class="totals__row"><span>Delivery</span><span class="ds-price ds-price--sm">S/ 8.60</span></div>
-          <div class="totals__row ds-p-lg-800"><span>Total pagado</span><span class="ds-price ds-price--lg" data-show="invitado logueado cargando">S/ 96.40</span><span class="ds-price ds-price--lg" data-show="sin-cupon">S/ 67.50</span></div>
+          <div class="totals__row ds-p-lg-800"><span>Total pagado</span><span class="ds-price ds-price--lg" data-show="invitado logueado cargando error-cupon">S/ 96.40</span><span class="ds-price ds-price--lg" data-show="sin-cupon">S/ 67.50</span></div>
         </div>
         <div class="row">
           <button id="btn-seguir" class="ds-button ds-button--outlined ds-button--blue ds-button--lg" type="button" data-promote="sin-cupon">Seguir mi pedido</button>
-          <a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Volver al menú</a>
+          <a href="#" class="tap"><span class="ds-button ds-button--link ds-button--blue ds-button--sm">Volver al menú</span></a>
         </div>
       </section>
     </div>
@@ -219,6 +235,7 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
         <button class="ds-chip" data-estado="logueado" aria-pressed="false">Con sesión · S/ 96.40</button>
         <button class="ds-chip" data-estado="sin-cupon" aria-pressed="false">Compra menor a S/ 80.00</button>
         <button class="ds-chip" data-estado="cargando" aria-pressed="false">Generando cupón</button>
+        <button class="ds-chip" data-estado="error-cupon" aria-pressed="false">No se pudo crear el cupón</button>
       </div>
       <label class="ds-check"><input id="sim-error" type="checkbox"> Simular error al copiar</label>
     </div>
@@ -228,7 +245,7 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
 <script>
 (function () {
   var CODE = "ANDREA-7KQ2";
-  var ESTADOS = ["invitado", "logueado", "sin-cupon", "cargando"];
+  var ESTADOS = ["invitado", "logueado", "sin-cupon", "cargando", "error-cupon"];
   var btn = document.getElementById("btn-copiar");
   var ok = document.getElementById("copiado");
   var err = document.getElementById("copia-error");
@@ -278,6 +295,11 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágen
       var r = document.createRange(); r.selectNodeContents(document.getElementById("codigo"));
       var s = getSelection(); s.removeAllRanges(); s.addRange(r);
     });
+  });
+
+  document.getElementById("btn-reintentar").addEventListener("click", function () {
+    setEstado("cargando");
+    setTimeout(function () { setEstado("invitado"); }, 1500);
   });
 
   document.querySelectorAll(".proto .ds-chip").forEach(function (c) {
