@@ -4,7 +4,7 @@ Harness de diseño para ejecutar tareas de sprint con agentes:
 benchmark, 3 propuestas de interfaz con el design system de Chili's,
 evaluación independiente y aprendizaje curado por un humano.
 
-**Versión del harness:** v0.2.1 (ver `CHANGELOG.md`) · **DS:** Chili's DS v1.2.0
+**Versión del harness:** v0.2.2 (ver `CHANGELOG.md`) · **DS:** Chili's DS v1.2.0
 
 ## Qué hace
 

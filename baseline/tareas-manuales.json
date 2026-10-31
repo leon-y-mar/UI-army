@@ -1,13 +1,32 @@
 {
-  "_instrucciones": "Registra 2 a 3 tareas hechas sin agente, con datos reales (Jira, calendario, registro propio). Si un dato no existe, usa null. No estimes.",
+  "_instrucciones": "Registra 2 a 3 tareas hechas sin agente, con datos reales (Jira, calendario, registro propio). Si un dato no existe, usa null. No estimes. story_points no se convierte a horas.",
   "tareas": [
     {
-      "tarea": "",
-      "fecha": "",
+      "tarea": "Ingreso de ubicación",
+      "fecha": null,
+      "story_points": 3,
       "horas_hasta_primera_review": null,
       "horas_humano": null,
       "rondas_review": null,
-      "fuente": ""
+      "fuente": "Story points reportados por el humano en sesión del 2026-10-31"
+    },
+    {
+      "tarea": "Rediseño de header + avisos",
+      "fecha": null,
+      "story_points": 3,
+      "horas_hasta_primera_review": null,
+      "horas_humano": null,
+      "rondas_review": null,
+      "fuente": "Story points reportados por el humano en sesión del 2026-10-31"
+    },
+    {
+      "tarea": "Ticket de descuento en TYP compra",
+      "fecha": null,
+      "story_points": 2,
+      "horas_hasta_primera_review": null,
+      "horas_humano": null,
+      "rondas_review": null,
+      "fuente": "Story points reportados por el humano en sesión del 2026-10-31"
     }
   ]
 }

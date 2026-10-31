@@ -4,6 +4,15 @@ Cada cambio a CLAUDE.md, agentes, rúbrica, comandos o design system sube versi�
 `log.json` registra con qué versión se ejecutó cada tarea, para saber si una
 mejora vino del harness o de la tarea.
 
+## v0.2.2 · Calibración genérica y baseline
+- `rubric/calibration/`: 3 casos genéricos escritos por el agente (Plataforma 2,
+  Ataca la métrica 3, Consistencia DS 4), marcados "CASO GENÉRICO". Reemplazar
+  por casos reales.
+- Evaluator: ignora `README.md` de calibración y trata los casos genéricos como
+  referencia de escala, no como criterio humano.
+- `baseline/tareas-manuales.json`: 3 tareas con story points (campo nuevo
+  `story_points`); horas y rondas en null.
+
 ## v0.2.1 · Estructura, render y Mobbin
 - Estructura de carpetas restaurada (la subida por web la había aplanado).
 - `scripts/render.js`: render con el Playwright del entorno, todas las

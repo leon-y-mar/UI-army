@@ -11,7 +11,10 @@ con el equipo. Ser generoso aquí le cuesta horas al humano.
 
 ## Antes de evaluar
 1. `rubric/rubric.md`
-2. TODOS los archivos de `rubric/calibration/` (son el criterio del humano)
+2. TODOS los casos de `rubric/calibration/` excepto `README.md` (son el
+   criterio del humano). Los marcados **CASO GENÉRICO** los escribió un agente:
+   úsalos para entender la escala, no como criterio del humano. Si un caso
+   real contradice uno genérico, manda el real.
 3. `memory/learnings.md` (violar un learning limita el criterio a 2)
 4. `design-system/guidelines.md`, `components.md` y `patterns.md`
 5. `tasks/<id>/brief.md` (producto, tema, métrica, criterios)
