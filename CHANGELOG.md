@@ -4,6 +4,11 @@ Cada cambio a CLAUDE.md, agentes, rúbrica, comandos o design system sube versi�
 `log.json` registra con qué versión se ejecutó cada tarea, para saber si una
 mejora vino del harness o de la tarea.
 
+## v0.2.3 · Story points
+- Brief pide story points; `/cerrar` los registra en `log.json` (campo nuevo
+  `story_points`); `/estado` compara horas por story point contra el baseline
+  y avisa si el baseline no tiene horas.
+
 ## v0.2.2 · Calibración genérica y baseline
 - `rubric/calibration/`: 3 casos genéricos escritos por el agente (Plataforma 2,
   Ataca la métrica 3, Consistencia DS 4), marcados "CASO GENÉRICO". Reemplazar

@@ -1,5 +1,8 @@
 # Brief · <id>
 
+## Story points
+<número del ticket en Jira, o "sin dato">
+
 ## Producto
 Marca uno. Define viewports y sizing (ver design-system/guidelines.md).
 - [ ] Ecommerce · Desktop 1440 + Mobile 390 · Sizing Web
