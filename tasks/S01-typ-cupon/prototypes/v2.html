@@ -44,7 +44,6 @@ revision-humana: Umbral "más de S/ 80.00" (¿subtotal o total con delivery?) a 
   .tap { display: inline-flex; align-items: center; min-height: var(--size-touch-min); text-decoration: none; }
   .note { display: flex; gap: var(--sp-8); align-items: flex-start; }
   .state { display: flex; flex-direction: column; gap: var(--sp-12); }
-  .state > .ds-button { align-self: stretch; }
 
   .panel__head { display: flex; flex-direction: column; gap: var(--sp-4); }
   .code { display: flex; flex-direction: column; gap: var(--sp-4); padding: var(--sp-12) var(--sp-16); background: var(--color-bg-canvas); border-radius: var(--br-8); }
@@ -124,7 +123,7 @@ revision-humana: Umbral "más de S/ 80.00" (¿subtotal o total con delivery?) a 
             <span class="ds-icon" data-icon="error" aria-hidden="true"></span>
             <span>No pudimos crear tu cupón en este momento. Tu pedido sigue confirmado y el cupón no se pierde: te lo enviamos a andrea.rojas@gmail.com apenas esté listo.</span>
           </div>
-          <button id="btn-reintentar" class="ds-button ds-button--offset ds-button--red ds-button--lg" type="button">Reintentar</button>
+          <button id="btn-reintentar" class="ds-button ds-button--offset ds-button--red ds-button--lg ds-button--block" type="button">Reintentar</button>
         </div>
         <div class="state" data-show="sin-cupon">
           <p class="note ds-p-md-500"><span class="ds-icon" data-icon="info" aria-hidden="true"></span><span>Este pedido no generó cupón. En compras de más de <strong class="nowrap">S/ 80.00</strong> te regalamos un cupón personal de descuento para tu siguiente pedido web.</span></p>

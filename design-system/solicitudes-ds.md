@@ -16,5 +16,7 @@ Estados: `[ ]` pendiente · `[x]` llevado a Figma · `[-]` descartado (con motiv
 - [ ] 2026-10-31 · S01-typ-cupon · Stepper de estado del pedido · No hay componente para los pasos Confirmado → En cocina → En camino → Entregado · Lista compuesta con ds-icon + estilos ds-p-xs-700/500 y texto de estado ("Listo", "Ahora", "Pendiente") para no depender del color (v3)
 - [ ] 2026-10-31 · S01-typ-cupon · Patrón TYP (confirmación de pedido) Desktop 1440 + Mobile 390 · No existe pantalla de confirmación en Patterns · Ecommerce ni versión Mobile 390 del ecommerce (revisión humana) · Tres propuestas compuestas con Header Desktop/Mobile y componentes existentes (v1, v2, v3)
 - [ ] 2026-10-31 · S01-typ-cupon · Íconos copiar, correo y cupón · No están entre los íconos exportados (revisión humana: íconos faltantes de la guía) · Se omiten y la acción se comunica con texto ("Copiar código", "en tu correo"); pasos del pedido usan placeholders clock/delivery/location (v1, v2, v3)
+- [ ] 2026-10-31 · S01-typ-cupon · Button Link y Button Small (área táctil) · Link no tiene min-height (mide ~25 px de alto) y Small mide 40 px en Sizing Web, ambos bajo size/touch-min (44) en mobile 390 · Envoltorio de layout `<a class="tap">` con min-height var(--size-touch-min) alrededor de la instancia Link, sin tocar ds-button (v1, v2, v3)
+- [ ] 2026-10-31 · S01-typ-cupon · Header Mobile · El botón ☰ (ds-header__menu) mide 28×32, bajo size/touch-min (44) · Sin cambio en el prototipo: se usa la instancia tal cual (v1, v2, v3)
 
 ## Resueltas

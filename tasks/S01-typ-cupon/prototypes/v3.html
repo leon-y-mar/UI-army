@@ -4,11 +4,12 @@ version: v3
 producto: ecommerce
 hipotesis: Si el cupón se presenta como algo ganado con este pedido, dentro de la tarjeta de estado del pedido, y la acción principal para el cliente sin sesión es guardarlo (crear cuenta con un solo campo: contraseña; con aviso antes de que venza), además de decirle que ya está en su correo y en Seguir mi pedido, entonces sube el % de usuarios que canjea cupones al mes porque el canje cae más por olvido o pérdida del código que por falta de interés.
 referencia: https://mobbin.com/screens/81773dd9-acfd-4b8c-a5d8-2b19beff92f4 (talabat) · https://mobbin.com/screens/1465658f-007d-4f75-a2f7-d47981b27c4e (Keeta) · https://mobbin.com/screens/b3454660-3f22-43c2-acfa-c707d20fdaca (MasterClass)
-patron-base: Rompe el patrón Ecommerce/Menú: sin panel lateral. Tarjeta de estado del pedido a todo el ancho (pasos del pedido + franja del cupón ganado) y, debajo, dos zonas: "Guarda tu cupón" (formulario de cuenta) y acordeones de apoyo (detalle del pedido, uso y condiciones). En 390 todo se apila en ese orden.
-trade-off: Para el cliente sin sesión la acción primaria es crear cuenta, no copiar: "Copiar código" queda como secundaria (Outlined) y puede bajar el # de copias. El detalle del pedido queda plegado en un acordeón.
-componentes-ds: ds-header, ds-logo, ds-icon, ds-alert (boxed success, inline success, inline error, boxed loading), ds-button (offset red lg, outlined blue lg, link blue sm), ds-field (Input con estado destructive), ds-password-strength, ds-price, ds-accordion (ranch), ds-chip y ds-check (solo controles del prototipo), estilos de texto ds-h3/ds-h4/ds-h5/ds-label-sm/ds-p-*
-gaps-ds: Cupón/Ticket con copiar · feedback "copiado" (toast) · stepper de estado del pedido · resumen de pedido de solo lectura · patrón TYP desktop + mobile 390 · ícono copiar/correo (ver solicitudes-ds.md, 2026-10-31 · S01-typ-cupon)
-revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de Dirk (ds-price + ds-h4 en el valor del cupón) · íconos faltantes (copiar, correo, pasos del pedido) resueltos con texto y placeholders
+patron-base: Rompe el patrón Ecommerce/Menú: sin panel lateral. Tarjeta de estado del pedido a todo el ancho (pasos del pedido + franja del cupón ganado) y, debajo, dos zonas: "Guarda tu cupón" (formulario de cuenta) y "Detalle del pedido" visible con acordeones de apoyo (uso, condiciones, ayuda). En 390 se apila en ese orden y los pasos se resumen en una línea.
+trade-off: Para el cliente sin sesión la acción primaria es crear cuenta, no copiar: "Copiar código" queda como secundaria (Outlined, mismo tamaño y junto al código) y puede bajar el # de copias. Pedir una contraseña en la TYP suma fricción; se compensa diciendo qué gana frente al correo.
+iteracion-2: Detalle del pedido sale del Accordion (contenido esencial) y queda visible con el total · en 390 el stepper se resume en una línea y el formulario se compacta para que "Crear cuenta y guardar cupón" quede sobre el fold · "Llega entre…" bajo el título · Password Strength aparece al escribir (los requisitos siguen visibles en el helper) · acordeones solo para apoyo y siempre en grupo · links con área táctil de 44 px · cargando avisa que el cupón llega al correo · nuevo estado error-cupon.
+componentes-ds: ds-header, ds-logo, ds-icon, ds-alert (boxed success, inline success, inline error, boxed loading, boxed error), ds-button (offset red lg, outlined blue lg, link blue sm), ds-field (Input con estado destructive), ds-password-strength, ds-price, ds-accordion (ranch), ds-chip y ds-check (solo controles del prototipo), estilos de texto ds-h3/ds-h4/ds-h5/ds-label-sm/ds-p-*
+gaps-ds: Cupón/Ticket con copiar · feedback "copiado" (toast) · stepper de estado del pedido · resumen de pedido de solo lectura · patrón TYP desktop + mobile 390 · ícono copiar/correo · Button Link sin área táctil mínima (ver solicitudes-ds.md, 2026-10-31 · S01-typ-cupon)
+revision-humana: Umbral "más de S/ 80.00" (¿subtotal o total con delivery?) a confirmar con negocio · aviso 3 días antes del vencimiento (requiere que negocio lo confirme) · Layout Mobile 390 del ecommerce (no existe en Figma) · uso de Dirk (ds-price + ds-h4 en el valor del cupón) · íconos faltantes (copiar, correo, pasos del pedido) resueltos con texto y placeholders
 -->
 <!doctype html>
 <html lang="es-PE">
@@ -31,11 +32,13 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
   .page { padding: var(--sp-24) var(--layout-margin) var(--sp-56); }
   .wrap { max-width: var(--layout-max-content); margin-inline: auto; display: flex; flex-direction: column; gap: var(--sp-32); }
   h1, h2, h3, p { margin: 0; }
+  /* Área táctil mínima para Button Link (gap DS): el envoltorio es el objetivo táctil; la instancia ds-button no se toca */
+  .tap { display: inline-flex; align-items: center; min-height: var(--size-touch-min); text-decoration: none; }
 
   /* Tarjeta de estado del pedido */
   .status { display: flex; flex-direction: column; gap: var(--sp-24); padding: var(--sp-24) var(--sp-32); background: var(--color-bg-surface); border-radius: var(--br-16); }
-  .status__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--sp-8) var(--sp-24); }
   .status__title { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .status__now { display: none; gap: var(--sp-8); align-items: center; }
   .steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-16); }
   .steps li { display: flex; gap: var(--sp-8); align-items: flex-start; }
   .steps li > span:last-child { display: flex; flex-direction: column; }
@@ -49,16 +52,18 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
   .reward__code p { overflow-wrap: anywhere; user-select: all; }
   .reward__facts div { display: flex; gap: var(--sp-4); align-items: center; }
   .reward__facts dt, .reward__facts dd { margin: 0; }
-  .reward__feedback { grid-column: 1 / -1; }
-  .reward__loading { grid-column: 1 / -1; }
+  .reward__wide { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--sp-12); align-items: flex-start; }
   .no-reward { display: flex; gap: var(--sp-8); align-items: flex-start; }
 
   /* Zona inferior */
   .below { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--layout-gutter); align-items: start; }
-  .save { display: flex; flex-direction: column; gap: var(--sp-16); }
+  .save, .side { display: flex; flex-direction: column; gap: var(--sp-16); }
   .save ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-8); }
   .save li { display: flex; gap: var(--sp-8); align-items: flex-start; }
-  .form { display: flex; flex-direction: column; gap: var(--sp-16); }
+  .form { display: flex; flex-direction: column; gap: var(--sp-12); }
+  .detail { display: flex; flex-direction: column; gap: var(--sp-12); padding: var(--sp-24); background: var(--color-bg-surface); border-radius: var(--br-16); }
+  .detail dl { margin: 0; display: flex; flex-direction: column; gap: var(--sp-4); }
+  .detail dt, .detail dd { margin: 0; }
   .totals { display: flex; flex-direction: column; gap: var(--sp-8); }
   .totals__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-16); }
   .lines { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-8); }
@@ -74,12 +79,15 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
   }
   @media (max-width: 599px) {
     .page { padding-top: var(--sp-16); }
-    .wrap { gap: var(--sp-24); }
-    .status { padding: var(--sp-16); gap: var(--sp-16); }
-    .steps { gap: var(--sp-8); }
-    .steps li { flex-direction: column; gap: var(--sp-4); }
+    .wrap { gap: var(--sp-20); }
+    .status { padding: 0; gap: var(--sp-12); background: var(--color-bg-canvas); }
+    .status__arrive { display: none; }
+    .status__now { display: flex; }
+    .steps { display: none; }
     .reward { grid-template-columns: minmax(0, 1fr); gap: var(--sp-12); padding: var(--sp-16); }
     .reward__facts { flex-direction: row; flex-wrap: wrap; gap: var(--sp-4) var(--sp-16); }
+    .save { gap: var(--sp-12); }
+    .detail { padding: var(--sp-16); }
   }
 </style>
 </head>
@@ -100,14 +108,14 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
     <div class="wrap">
       <!-- 1 · Estado del pedido + cupón ganado -->
       <section class="status" aria-labelledby="titulo">
-        <div class="status__head">
-          <div class="status__title">
-            <p class="ds-label-sm">Pedido N.º CH-284715 · Sáb 31 · Oct</p>
-            <h1 id="titulo" class="ds-h3">¡Gracias, Andrea! Tu pedido está confirmado</h1>
-          </div>
-          <p class="ds-p-sm-600">Llega entre <strong class="nowrap">8:15 y 8:35 PM</strong></p>
+        <div class="status__title">
+          <p class="ds-label-sm">Pedido N.º CH-284715 confirmado · Sáb 31 · Oct</p>
+          <h1 id="titulo" class="ds-h3">¡Gracias, Andrea!</h1>
+          <p class="status__arrive ds-p-md-600">Tu pedido llega hoy entre <strong class="nowrap">8:15 y 8:35 PM</strong>.</p>
         </div>
 
+        <!-- 390: el stepper se resume en una línea con texto (no depende del color) -->
+        <p class="status__now ds-p-sm-600"><span class="ds-icon ds-icon--xs" data-icon="clock" aria-hidden="true"></span><span><strong>En cocina</strong> ahora · llega <strong class="nowrap">8:15 – 8:35 PM</strong></span></p>
         <ol class="steps" aria-label="Estado del pedido">
           <li><span class="ds-icon" data-icon="checkmark" aria-hidden="true"></span><span><span class="ds-p-xs-700">Confirmado</span><span class="ds-p-xs-500">Listo · 7:42 PM</span></span></li>
           <li aria-current="step"><span class="ds-icon" data-icon="clock" aria-hidden="true"></span><span><span class="ds-p-xs-700">En cocina</span><span class="ds-p-xs-500">Ahora</span></span></li>
@@ -115,18 +123,25 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
           <li><span class="ds-icon" data-icon="location" aria-hidden="true"></span><span><span class="ds-p-xs-700">Entregado</span><span class="ds-p-xs-500">Pendiente</span></span></li>
         </ol>
 
-        <!-- Cupón ganado · solo con compra ≥ S/ 80.00 -->
-        <div class="reward" role="group" aria-labelledby="cupon-titulo" data-show="invitado logueado cargando">
-          <div class="reward__loading" data-show="cargando">
+        <!-- Cupón ganado · solo con compra de más de S/ 80.00 -->
+        <div class="reward" role="group" aria-labelledby="cupon-titulo" data-show="invitado logueado cargando error-cupon">
+          <div class="reward__wide" data-show="cargando">
             <div class="ds-alert ds-alert--boxed ds-alert--loading" role="status">
               <span class="ds-icon" data-icon="loading" aria-hidden="true"></span>
-              <span>Estamos creando tu cupón personal. Tarda unos segundos; no cierres esta página.</span>
+              <span>Estamos creando tu cupón personal. Tarda unos segundos. Si cierras esta página no lo pierdes: también te llega a andrea.rojas@gmail.com.</span>
             </div>
+          </div>
+          <div class="reward__wide" data-show="error-cupon">
+            <div class="ds-alert ds-alert--boxed ds-alert--error" role="alert">
+              <span class="ds-icon" data-icon="error" aria-hidden="true"></span>
+              <span>No pudimos crear tu cupón en este momento. Tu pedido sigue confirmado y el cupón no se pierde: te lo enviamos a andrea.rojas@gmail.com apenas esté listo.</span>
+            </div>
+            <button id="btn-reintentar" class="ds-button ds-button--outlined ds-button--blue ds-button--lg" type="button">Reintentar</button>
           </div>
           <div class="reward__value" data-show="invitado logueado">
             <p id="cupon-titulo" class="ds-label-sm">Con este pedido ganaste</p>
             <p class="reward__amount"><span class="ds-price ds-h4">S/ 15.00</span> <span class="ds-p-lg-800">de descuento</span></p>
-            <p class="ds-p-sm-500">para tu próximo pedido web desde <span class="nowrap">S/ 50.00</span></p>
+            <p class="ds-p-sm-500">en tu próximo pedido desde <span class="nowrap">S/ 50.00</span></p>
           </div>
           <div class="reward__code" data-show="invitado logueado">
             <span class="ds-label-sm">Tu código</span>
@@ -139,10 +154,10 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
           <button id="btn-copiar" class="ds-button ds-button--outlined ds-button--blue ds-button--lg" type="button" data-show="invitado logueado" data-promote="logueado">
             <span class="ds-icon" data-icon="checkmark" aria-hidden="true" hidden></span><span class="btn-label">Copiar código</span>
           </button>
-          <div class="reward__feedback" id="feedback" hidden>
+          <div class="reward__wide" id="feedback" hidden>
             <div id="copiado" class="ds-alert ds-alert--success" role="status" hidden>
               <span class="ds-icon" data-icon="success" aria-hidden="true"></span>
-              <span>Código copiado. Pégalo en el checkout de tu próximo pedido.</span>
+              <span id="copiado-texto">Código copiado. Pégalo en el checkout de tu próximo pedido.</span>
             </div>
             <div id="copia-error" class="ds-alert ds-alert--error" role="alert" hidden>
               <span class="ds-icon" data-icon="error" aria-hidden="true"></span>
@@ -151,44 +166,48 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
           </div>
         </div>
 
-        <!-- Compra < S/ 80.00: sin cupón -->
-        <p class="no-reward ds-p-sm-500" data-show="sin-cupon">
-          <span class="ds-icon ds-icon--xs" data-icon="info" aria-hidden="true"></span>
-          <span>En pedidos desde <span class="nowrap">S/ 80.00</span> te regalamos un descuento para tu siguiente compra.</span>
+        <!-- Compra de S/ 80.00 o menos: sin cupón -->
+        <p class="no-reward ds-p-md-500" data-show="sin-cupon">
+          <span class="ds-icon" data-icon="info" aria-hidden="true"></span>
+          <span>Este pedido no generó cupón. En compras de más de <strong class="nowrap">S/ 80.00</strong> te regalamos un cupón personal de descuento para tu siguiente pedido web.</span>
         </p>
       </section>
 
       <!-- 2 · Zona inferior -->
       <div class="below">
         <!-- Guardar el cupón: cliente sin sesión -->
-        <section class="save" aria-labelledby="guardar" data-show="invitado cargando sin-cupon">
-          <h2 id="guardar" class="ds-h5" data-show="invitado cargando">Que no se te pierda tu cupón</h2>
-          <h2 class="ds-h5" data-show="sin-cupon">Crea tu cuenta y sigue tus pedidos</h2>
-          <ul class="ds-p-md-500" data-show="invitado cargando">
-            <li><span class="ds-icon" data-icon="checkmark" aria-hidden="true"></span><span><strong>Ya está en tu correo:</strong> lo enviamos a andrea.rojas@gmail.com con tu comprobante.</span></li>
-            <li><span class="ds-icon" data-icon="checkmark" aria-hidden="true"></span><span><strong>Sin cuenta:</strong> búscalo en <strong>Seguir mi pedido</strong> con tu n.º CH-284715 y tu correo.</span></li>
-            <li><span class="ds-icon" data-icon="account" aria-hidden="true"></span><span><strong>Con cuenta:</strong> queda en Mis cupones, se aplica con un toque al pagar y te avisamos 3 días antes de que venza.</span></li>
-          </ul>
+        <section class="save" aria-labelledby="guardar" data-show="invitado cargando error-cupon sin-cupon">
+          <h2 id="guardar" class="ds-h5"><span data-show="invitado cargando error-cupon">Guarda tu cupón</span><span data-show="sin-cupon">Crea tu cuenta y sigue tus pedidos</span></h2>
+          <p class="ds-p-md-500" data-show="invitado cargando error-cupon">Ya va a tu correo. Con una cuenta, además, <strong>se aplica solo al pagar</strong> y <strong>te avisamos 3 días antes de que venza</strong>.</p>
+          <p class="ds-p-md-500" data-show="sin-cupon">Con una cuenta ves tus pedidos y recibes tus próximos cupones en Mis cupones.</p>
 
           <form id="form-cuenta" class="form" novalidate>
             <div class="ds-field" id="campo-clave">
-              <div class="ds-field__label-row"><label class="ds-field__label" for="clave">Crea una contraseña</label><span class="ds-field__required">Obligatorio</span></div>
+              <div class="ds-field__label-row"><label class="ds-field__label" for="clave">Contraseña para andrea.rojas@gmail.com</label><span class="ds-field__required">Obligatorio</span></div>
               <input id="clave" class="ds-field__control" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" aria-describedby="clave-ayuda">
-              <span class="ds-field__helper" id="clave-ayuda">Mínimo 8 caracteres, con al menos un número. Tu cuenta usará andrea.rojas@gmail.com, el correo de tu compra.</span>
+              <span class="ds-field__helper" id="clave-ayuda">Mínimo 8 caracteres, con al menos un número.</span>
             </div>
-            <div class="ds-password-strength" data-level="none" id="fuerza">
+            <div class="ds-password-strength" data-level="none" id="fuerza" hidden>
               <div class="ds-password-strength__bar"><span></span><span></span><span></span></div>
               <span class="ds-password-strength__hint"><span class="ds-icon ds-icon--xs" data-icon="info" aria-hidden="true"></span><span id="fuerza-texto">Aún sin contraseña</span></span>
             </div>
             <div class="row">
               <button class="ds-button ds-button--offset ds-button--red ds-button--lg" type="submit">
-                <span data-show="invitado cargando">Crear cuenta y guardar cupón</span><span data-show="sin-cupon">Crear cuenta</span>
+                <span data-show="invitado cargando error-cupon">Crear cuenta y guardar cupón</span><span data-show="sin-cupon">Crear cuenta</span>
               </button>
             </div>
           </form>
           <div id="cuenta-ok" class="ds-alert ds-alert--boxed ds-alert--success" role="status" hidden>
             <span class="ds-icon" data-icon="success" aria-hidden="true"></span>
-            <span>Cuenta creada. Tu cupón ANDREA-7KQ2 ya está en Mis cupones y te avisaremos antes de que venza.</span>
+            <span><span data-show="invitado cargando error-cupon">Cuenta creada. Tu cupón queda en Mis cupones y te avisaremos 3 días antes de que venza.</span><span data-show="sin-cupon">Cuenta creada. Tus próximos cupones aparecerán en Mis cupones.</span></span>
+          </div>
+
+          <div data-show="invitado cargando error-cupon">
+            <h3 class="ds-label-sm">Si no creas cuenta, lo recuperas así</h3>
+            <ul class="ds-p-sm-500">
+              <li><span class="ds-icon ds-icon--xs" data-icon="checkmark" aria-hidden="true"></span><span><strong>En tu correo:</strong> andrea.rojas@gmail.com, junto con tu comprobante.</span></li>
+              <li><span class="ds-icon ds-icon--xs" data-icon="checkmark" aria-hidden="true"></span><span><strong>En Seguir mi pedido:</strong> con tu n.º CH-284715 y tu correo; el cupón aparece debajo del detalle.</span></li>
+            </ul>
           </div>
         </section>
 
@@ -199,46 +218,51 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
             <span class="ds-icon" data-icon="success" aria-hidden="true"></span>
             <span>Está en Mi cuenta › Mis cupones. Al pagar tu próximo pedido te lo ofrecemos con un toque y te avisamos 3 días antes de que venza.</span>
           </div>
-          <div class="row"><a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Ver mis cupones</a></div>
+          <div class="row"><a href="#" class="tap"><span class="ds-button ds-button--link ds-button--blue ds-button--sm">Ver mis cupones</span></a></div>
         </section>
 
-        <!-- Apoyo -->
-        <div class="ds-accordion">
-          <details class="ds-accordion__item ds-accordion__item--ranch">
-            <summary>Detalle del pedido</summary>
-            <div class="ds-accordion__body">
-              <div class="totals ds-p-sm-500">
-                <ul class="lines" data-show="invitado logueado cargando">
-                  <li><span>1 × Big Mouth Bites <br><span class="ds-p-xs-500">+ Extra tocino</span></span><span class="ds-price ds-price--sm">S/ 42.90</span></li>
-                  <li><span>1 × Fajitas de pollo <br><span class="ds-p-xs-500">− Sin cebolla</span></span><span class="ds-price ds-price--sm">S/ 44.90</span></li>
-                </ul>
-                <ul class="lines" data-show="sin-cupon">
-                  <li><span>1 × Oldtimer con queso</span><span class="ds-price ds-price--sm">S/ 39.90</span></li>
-                  <li><span>1 × Papas fritas con queso</span><span class="ds-price ds-price--sm">S/ 19.00</span></li>
-                </ul>
-                <div class="totals__row"><span>Delivery · Av. Benavides 1245, Miraflores</span><span class="ds-price ds-price--sm">S/ 8.60</span></div>
-                <div class="totals__row ds-p-md-800"><span>Total pagado · Visa 4821</span><span class="ds-price ds-price--md" data-show="invitado logueado cargando">S/ 96.40</span><span class="ds-price ds-price--md" data-show="sin-cupon">S/ 67.50</span></div>
-              </div>
+        <!-- Detalle del pedido (visible: contenido esencial) + apoyo -->
+        <div class="side">
+          <section class="detail" aria-labelledby="detalle">
+            <h2 id="detalle" class="ds-h5">Detalle del pedido</h2>
+            <div class="totals ds-p-sm-500">
+              <ul class="lines" data-show="invitado logueado cargando error-cupon">
+                <li><span>1 × Big Mouth Bites <br><span class="ds-p-xs-500">+ Extra tocino</span></span><span class="ds-price ds-price--sm">S/ 42.90</span></li>
+                <li><span>1 × Fajitas de pollo <br><span class="ds-p-xs-500">− Sin cebolla</span></span><span class="ds-price ds-price--sm">S/ 44.90</span></li>
+              </ul>
+              <ul class="lines" data-show="sin-cupon">
+                <li><span>1 × Oldtimer con queso</span><span class="ds-price ds-price--sm">S/ 39.90</span></li>
+                <li><span>1 × Papas fritas con queso</span><span class="ds-price ds-price--sm">S/ 19.00</span></li>
+              </ul>
+              <div class="totals__row"><span>Delivery · Av. Benavides 1245, Miraflores</span><span class="ds-price ds-price--sm">S/ 8.60</span></div>
+              <div class="totals__row ds-p-md-800"><span>Total pagado · Visa 4821</span><span class="ds-price ds-price--md" data-show="invitado logueado cargando error-cupon">S/ 96.40</span><span class="ds-price ds-price--md" data-show="sin-cupon">S/ 67.50</span></div>
             </div>
-          </details>
-          <details class="ds-accordion__item ds-accordion__item--ranch" data-show="invitado logueado">
-            <summary>¿Cómo uso mi cupón?</summary>
-            <div class="ds-accordion__body">Arma tu pedido en chilis.pe y pega el código en «Código de descuento» antes de pagar. Si tienes cuenta, aparece solo en el checkout.</div>
-          </details>
-          <details class="ds-accordion__item ds-accordion__item--ranch" data-show="invitado logueado">
-            <summary>Condiciones</summary>
-            <div class="ds-accordion__body">Un solo uso, hasta el lunes 30 de noviembre de 2026, en pedidos web desde S/ 50.00 para delivery o recojo. Personal: solo funciona con andrea.rojas@gmail.com. No acumulable con otras promociones.</div>
-          </details>
-          <details class="ds-accordion__item ds-accordion__item--ranch" data-show="sin-cupon cargando">
-            <summary>¿Necesitas ayuda con tu pedido?</summary>
-            <div class="ds-accordion__body">Llámanos al (01) 610-5000 o escríbenos desde Seguir mi pedido con tu n.º CH-284715.</div>
-          </details>
+          </section>
+
+          <div class="ds-accordion">
+            <details class="ds-accordion__item ds-accordion__item--ranch" data-show="invitado logueado cargando error-cupon">
+              <summary>¿Cómo uso mi cupón?</summary>
+              <div class="ds-accordion__body">Arma tu pedido en chilis.pe y pega el código en «Código de descuento» antes de pagar. Si tienes cuenta, aparece solo en el checkout.</div>
+            </details>
+            <details class="ds-accordion__item ds-accordion__item--ranch" data-show="invitado logueado">
+              <summary>Condiciones</summary>
+              <div class="ds-accordion__body">Un solo uso, hasta el lunes 30 de noviembre de 2026, en pedidos web desde S/ 50.00 para delivery o recojo. Personal: solo funciona con andrea.rojas@gmail.com. No acumulable con otras promociones.</div>
+            </details>
+            <details class="ds-accordion__item ds-accordion__item--ranch" data-show="sin-cupon">
+              <summary>¿Cómo gano un cupón?</summary>
+              <div class="ds-accordion__body">Haz un pedido web de más de S/ 80.00. Al confirmarse, te mostramos aquí tu cupón personal y te lo enviamos a tu correo.</div>
+            </details>
+            <details class="ds-accordion__item ds-accordion__item--ranch">
+              <summary>¿Necesitas ayuda con tu pedido?</summary>
+              <div class="ds-accordion__body">Escríbenos desde Seguir mi pedido con tu n.º CH-284715 y te respondemos por correo.</div>
+            </details>
+          </div>
         </div>
       </div>
     </div>
   </main>
 
-  <footer class="proto" aria-label="Controles del prototipo">
+<footer class="proto" aria-label="Controles del prototipo">
     <div class="proto__inner">
       <p class="ds-label-sm">Solo prototipo · no forma parte del diseño · estado de la TYP</p>
       <div class="ds-chip-row">
@@ -246,6 +270,7 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
         <button class="ds-chip" data-estado="logueado" aria-pressed="false">Con sesión · S/ 96.40</button>
         <button class="ds-chip" data-estado="sin-cupon" aria-pressed="false">Compra menor a S/ 80.00</button>
         <button class="ds-chip" data-estado="cargando" aria-pressed="false">Generando cupón</button>
+        <button class="ds-chip" data-estado="error-cupon" aria-pressed="false">No se pudo crear el cupón</button>
       </div>
       <label class="ds-check"><input id="sim-error" type="checkbox"> Simular error al copiar</label>
     </div>
@@ -255,7 +280,7 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
 <script>
 (function () {
   var CODE = "ANDREA-7KQ2";
-  var ESTADOS = ["invitado", "logueado", "sin-cupon", "cargando"];
+  var ESTADOS = ["invitado", "logueado", "sin-cupon", "cargando", "error-cupon"];
   var btn = document.getElementById("btn-copiar");
   var fb = document.getElementById("feedback");
   var ok = document.getElementById("copiado");
@@ -266,7 +291,7 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
   var ayuda = document.getElementById("clave-ayuda");
   var fuerza = document.getElementById("fuerza");
   var fuerzaTxt = document.getElementById("fuerza-texto");
-  var AYUDA = "Mínimo 8 caracteres, con al menos un número. Tu cuenta usará andrea.rojas@gmail.com, el correo de tu compra.";
+  var AYUDA = "Mínimo 8 caracteres, con al menos un número.";
 
   function resetCopy() {
     fb.hidden = true; ok.hidden = true; err.hidden = true;
@@ -311,6 +336,9 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
   btn.addEventListener("click", function () {
     writeClipboard(CODE).then(function () {
       fb.hidden = false; err.hidden = true; ok.hidden = false;
+      document.getElementById("copiado-texto").textContent = document.body.getAttribute("data-estado") === "logueado"
+        ? "Código copiado. Pégalo en el checkout de tu próximo pedido."
+        : "Código copiado. Para no depender del portapapeles, guárdalo en tu cuenta aquí abajo.";
       btn.querySelector(".btn-label").textContent = "Código copiado";
       btn.querySelector(".ds-icon").hidden = false;
     }, function () {
@@ -326,6 +354,7 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
     if (v.length >= 8 && /\d/.test(v)) { lvl = "medium"; txt = "Media · puedes sumar una mayúscula"; }
     if (v.length >= 10 && /\d/.test(v) && /[A-ZÁÉÍÓÚÑ]/.test(v)) { lvl = "strong"; txt = "Fuerte"; }
     fuerza.setAttribute("data-level", lvl); fuerzaTxt.textContent = txt;
+    fuerza.hidden = !v.length;
   }
   clave.addEventListener("input", function () {
     nivel();
@@ -341,6 +370,11 @@ revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · uso de 
       clave.focus(); return;
     }
     form.hidden = true; document.getElementById("cuenta-ok").hidden = false;
+  });
+
+  document.getElementById("btn-reintentar").addEventListener("click", function () {
+    setEstado("cargando");
+    setTimeout(function () { setEstado("invitado"); }, 1500);
   });
 
   document.querySelectorAll(".proto .ds-chip").forEach(function (c) {
