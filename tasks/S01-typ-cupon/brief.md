@@ -1,7 +1,7 @@
 # Brief · S01-typ-cupon
 
 ## Story points
-**PENDIENTE**
+2
 
 ## Producto
 Marca uno. Define viewports y sizing (ver design-system/guidelines.md).
@@ -22,7 +22,7 @@ Flujo de asignación y visualización de cupones personalizados post-compra:
 
 1. **Visualización del cupón post compra:** en la pantalla de confirmación del
    pedido (TYP) se muestra un cupón cuando el monto de la compra supera un
-   umbral de S/ **PENDIENTE**.
+   umbral de S/ 80.00.
 2. **Códigos personalizados:** códigos únicos asociados al cliente, no genéricos.
 3. **Clientes logueados y no logueados:** el cupón queda asociado al cliente o
    pedido para consulta posterior.
@@ -42,17 +42,18 @@ Incentivar la recompra mediante cupones personalizados después de una compra
 que cumpla el monto mínimo, disponibles en la confirmación del pedido y en Avisos.
 
 ## Métrica
-- **Principal:** **PENDIENTE** (elegir una) · valor actual: **PENDIENTE** · fuente: **PENDIENTE**
-- Candidatas entregadas por el humano:
-  - # de usuarios que copia el código de descuento
-  - # de transacciones con cupón de descuento
-  - Prom. de códigos canjeados por usuario al mes
-  - % de usuarios que canjea cupones al mes
+- **Principal:** % de usuarios que canjea cupones al mes · valor actual: **PENDIENTE** · fuente: **PENDIENTE**
+- **Secundaria:** # de usuarios que copia el código de descuento
+- Otras métricas mencionadas: # de transacciones con cupón de descuento ·
+  prom. de códigos canjeados por usuario al mes
 
 ## Criterios de aceptación
 Cada uno debe poder responderse con sí/no mirando el diseño.
-- [ ] **PENDIENTE**
-- [ ] **PENDIENTE**
+- [ ] El usuario tendrá visibilidad clara del cupón. ⚠️ no verificable tal cual
+- [ ] El cupón es visible después del checkout.
+- [ ] El usuario podrá copiar el código desde la TYP.
+- [ ] En una compra < S/ 20, la TYP no muestra cupón. ⚠️ contradice el umbral S/ 80.00
+- [ ] El cliente no logueado ve en la TYP dónde y cómo recuperar su cupón después.
 
 ## Restricciones
 - No existe pantalla de confirmación (TYP) ni de Avisos en el DS: se componen
