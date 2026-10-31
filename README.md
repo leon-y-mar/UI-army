@@ -1,39 +1,66 @@
-# Design system · Chili's DS
+# UI-Army
 
-**Fuente de verdad:** Figma "Prueba - Chilis DS" · versión 1.2.0
-https://www.figma.com/design/l78fB89GmYoqsmvvYTjLkn/Prueba---Chilis-DS
-**Leído:** 2026-10-31 · Cómo actualizar: `docs/actualizar-ds.md`
+Harness de diseño para ejecutar tareas de sprint con agentes:
+benchmark, 3 propuestas de interfaz con el design system de Chili's,
+evaluación independiente y aprendizaje curado por un humano.
 
-Si este repo y Figma no coinciden, manda Figma.
+**Versión del harness:** v0.2.0 (ver `CHANGELOG.md`) · **DS:** Chili's DS v1.2.0
 
-## Archivos
+## Qué hace
 
-| Archivo | Para qué | Quién lo lee |
+```
+brief ──► chequeo ──► benchmark ──► designer ⇄ evaluator ──► review humana ──► cierre
+                        (Mobbin)    (lint DS + render + rúbrica)   (rúbrica)    (log + learnings)
+```
+
+| Pieza | Archivo | Rol |
 |---|---|---|
-| `guidelines.md` | Reglas para agentes: permitido, prohibido, accesibilidad, revisión humana | designer, evaluator |
-| `tokens.json` | Todos los tokens con valores por modo (fuente para máquinas) | consulta |
-| `tokens.css` | Tokens como variables CSS + text styles como clases | prototipos |
-| `components.css` | Componentes publicados en HTML/CSS (equivale a instancias) | prototipos |
-| `components.md` | Inventario: props, variantes, USAR / NO USAR, HTML de uso | designer, evaluator |
-| `patterns.md` | Cómo se combinan los componentes en cada producto | designer, evaluator |
-| `prototype.js` | Aplica `?theme=` y `?device=` en los prototipos | prototipos |
-| `preview.html` | Vitrina de componentes para comparar contra Figma | humano |
-| `solicitudes-ds.md` | Necesidades detectadas para llevar a QA & Changelog | designer escribe, humano decide |
+| Orquestador | `CLAUDE.md` | Sesión principal. Valida, delega, registra. |
+| Designer | `.claude/agents/designer.md` | Benchmark y 3 propuestas con el DS. |
+| Evaluator | `.claude/agents/evaluator.md` | Lint, render y puntaje. Nunca diseña. |
+| Design system | `design-system/` | Copia en código del Figma de Chili's. |
+| Humano | `tasks/<id>/review.md` | Review real, puntaje, learnings y solicitudes al DS. |
 
-## Arquitectura de tokens (igual que en Figma)
+## Productos que cubre
+
+| Producto | Viewports | Patrón base |
+|---|---|---|
+| Ecommerce | Desktop 1440 · Mobile 390 | Menú con carrito lateral |
+| Reservas | Tablet vertical 820×1180 | Fecha → Hora → Personas → Resumen |
+| Toma de pedido | Tablet horizontal 1180×820 | Plano de mesas + pedido + Action Bar |
+
+## Comandos
+
+| Comando | Cuándo |
+|---|---|
+| `/nueva-tarea <id>` | Crear la carpeta de una tarea desde el template |
+| `/ejecutar <id>` | Correr benchmark + loop designer/evaluator |
+| `/cerrar <id>` | Después de tu review: score, delta, log y learnings propuestos |
+| `/estado` | Resumen de métricas de `log.json` |
+
+## Empezar
+
+1. `docs/setup.md`: GitHub + Claude Code en la nube, sin git local.
+2. Abre `design-system/preview.html` y compáralo con Figma.
+3. `rubric/calibration/` y `baseline/` (ver `docs/personalizar.md`).
+4. `/nueva-tarea S01-<nombre>` → completa el brief → `/ejecutar S01-<nombre>`.
+
+## Estructura
 
 ```
-Primitives (ocultas)  →  Color semántico (Light / Dark)  →  Tokens de componente (button/*)
-Sizing (Web / Tablet) · Layout (Desktop / Tablet / Mobile) · Typography (Desktop / Mobile)
-Spacing sp-* · Radius br-* · Border bw-* · Motion · Elevation
+UI-Army/
+├── CLAUDE.md               # orquestador
+├── .mcp.json               # Mobbin MCP
+├── .claude/agents/         # designer, evaluator
+├── .claude/commands/       # nueva-tarea, ejecutar, cerrar, estado
+├── design-system/          # Chili's DS: tokens, componentes, patrones, reglas
+├── scripts/lint_ds.py      # reglas mecánicas del DS
+├── docs/                   # setup, flujo, métricas, personalizar, actualizar-ds
+├── rubric/                 # rúbrica v1.1 + calibración (tuya)
+├── memory/learnings.md     # reglas aprobadas por el humano
+├── templates/              # brief, benchmark, prototipo, evaluación, review, comparador
+├── baseline/               # tiempos sin agente
+├── tasks/                  # una carpeta por tarea
+├── log.json                # una fila por tarea cerrada
+└── CHANGELOG.md            # versiones del harness
 ```
-
-Nomenclatura en CSS: el nombre de Figma con `/` → `-`.
-`color/bg/canvas` → `--color-bg-canvas` · `button/red/bg` → `--button-red-bg` ·
-`size/touch-min` → `--size-touch-min` · `sp-16` → `--sp-16`.
-
-## Fidelidad
-- `[figma]` en `components.css`: valor leído del componente.
-- `[aprox]`: estado o detalle no leído (hover de algunos, focus, accordion, header mobile). Verifícalo con `preview.html` contra Figma.
-- **Íconos y logo** son placeholders: los SVG de Assets no están exportados.
-- **Dirk** no está disponible en web (licencia pendiente): se usa Montserrat 900 como respaldo.
