@@ -1,0 +1,291 @@
+<!--
+UI-ARMY
+version: v2
+producto: ecommerce
+hipotesis: Si la TYP confirma primero que la compra salió bien y el cupón vive en el panel derecho donde el cliente ya vio "Tu pedido" (persistente y siempre visible en 1440; justo después de la confirmación en 390), entonces sube el % de usuarios que canjea cupones al mes porque el cupón se lee como parte de su pedido (más creíble, menos "promo") y se ve sin scroll sin competir con la confirmación.
+referencia: https://mobbin.com/screens/557a8608-5950-4147-98fe-2d8ff68ee2fa (Shop) · https://mobbin.com/screens/79f7d7bd-72d2-44fa-a407-d89f1db4176b (Typeform) · https://mobbin.com/screens/9b8bc8b0-e5da-4daf-bf22-0e00f943e140 (Adobe)
+patron-base: Reutiliza el layout de Ecommerce/Menú (contenido a la izquierda + panel lateral persistente a la derecha), pero el panel deja de ser "Tu pedido" con Checkout y pasa a ser "Tu cupón" con "Copiar código" como única primaria. En 390 el panel se apila entre la confirmación y el detalle del pedido.
+trade-off: El cupón comparte la pantalla con la confirmación y el detalle: pesa menos visualmente que en un bloque héroe, y en 390 el detalle del pedido queda bajo el fold.
+componentes-ds: ds-header, ds-logo, ds-icon, ds-alert (boxed success, inline success, inline error, boxed loading), ds-button (offset red lg, outlined blue lg, link blue sm), ds-price, ds-cart-item (solo lectura, sin ds-quantity), ds-accordion (ranch), ds-chip y ds-check (solo controles del prototipo), estilos de texto ds-h2/ds-h4/ds-h5/ds-label-sm/ds-p-*
+gaps-ds: Cupón/Ticket con copiar · feedback "copiado" (toast) · resumen de pedido de solo lectura (Cart Summary sin Checkout) · campo de código copiable de solo lectura · patrón TYP desktop + mobile 390 · ícono copiar/correo (ver solicitudes-ds.md, 2026-10-31 · S01-typ-cupon)
+revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágenes placeholder en Cart Item · uso de Dirk (ds-price + ds-h2 en el valor del cupón) · íconos faltantes (copiar, correo) resueltos con texto
+-->
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v2 · TYP con cupón para el próximo pedido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="../../../design-system/prototype.js"></script>
+<link rel="stylesheet" href="../../../design-system/tokens.css">
+<link rel="stylesheet" href="../../../design-system/components.css">
+<style>
+  /* Solo layout de pantalla. Solo var(--…). Nunca reestilar clases ds-*. */
+  [hidden] { display: none !important; }
+  .screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .nowrap { white-space: nowrap; }
+  .row { display: flex; flex-wrap: wrap; gap: var(--sp-16); align-items: center; }
+  .page { padding: var(--sp-32) var(--layout-margin) var(--sp-56); }
+  .layout { max-width: var(--layout-max-content); margin-inline: auto; display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); column-gap: var(--layout-gutter); row-gap: var(--sp-32);
+    grid-template-areas: "confirm panel" "details panel"; align-items: start; }
+  .confirm { grid-area: confirm; display: flex; flex-direction: column; gap: var(--sp-16); }
+  .confirm h1, .confirm p { margin: 0; }
+  .details { grid-area: details; display: flex; flex-direction: column; gap: var(--sp-24); }
+  .panel { grid-area: panel; position: sticky; top: var(--sp-24); display: flex; flex-direction: column; gap: var(--sp-16);
+    padding: var(--sp-24); background: var(--color-bg-surface); border-radius: var(--br-16); }
+  .panel h2, .panel h3, .panel p { margin: 0; }
+  /* Compra < S/ 80.00: sin panel de cupón, el contenido ocupa el ancho */
+  .layout:has(> .panel[hidden]) { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); grid-template-areas: "confirm confirm" "details details"; }
+  .layout:has(> .panel[hidden]) .details, .layout:has(> .panel[hidden]) .confirm { max-width: calc(var(--layout-max-content) * 2 / 3); }
+
+  .panel__head { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .code { display: flex; flex-direction: column; gap: var(--sp-4); padding: var(--sp-12) var(--sp-16); background: var(--color-bg-canvas); border-radius: var(--br-8); }
+  .code p { overflow-wrap: anywhere; user-select: all; }
+  .facts { display: flex; flex-direction: column; gap: var(--sp-8); margin: 0; }
+  .facts div { display: flex; gap: var(--sp-8); align-items: center; }
+  .facts dt, .facts dd { margin: 0; }
+  .facts dd { margin-left: auto; text-align: right; }
+  .recover { display: flex; flex-direction: column; gap: var(--sp-8); }
+  .recover ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-8); }
+  .recover li { display: flex; gap: var(--sp-8); align-items: flex-start; }
+
+  .meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-16) var(--sp-24); margin: 0; }
+  .meta dt, .meta dd { margin: 0; }
+  .meta div { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .details h2 { margin: 0; }
+  .totals { display: flex; flex-direction: column; gap: var(--sp-8); }
+  .totals__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-16); }
+
+  .proto { padding: var(--sp-24) var(--layout-margin); background: var(--color-bg-surface); }
+  .proto__inner { max-width: var(--layout-max-content); margin-inline: auto; display: flex; flex-direction: column; gap: var(--sp-12); }
+  .proto p { margin: 0; }
+
+  /* Breakpoints = los de tokens.css (Tablet ≤1023, Mobile ≤599); var() no funciona en @media */
+  @media (max-width: 1023px) {
+    .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "confirm" "panel" "details"; row-gap: var(--sp-24); }
+    .panel { position: static; }
+    .meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 599px) {
+    .page { padding-top: var(--sp-16); }
+    .layout { row-gap: var(--sp-16); }
+    .confirm { gap: var(--sp-8); }
+    .panel { padding: var(--sp-16); gap: var(--sp-12); }
+    .meta { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
+</head>
+<body data-estado="invitado">
+<div class="screen">
+  <header class="ds-header">
+    <span class="ds-logo">Chili's</span>
+    <nav class="ds-header__nav" aria-label="Principal"><a href="#">Menú</a><a href="#">Locales</a><a href="#">Rewards</a><a href="#">Reservas</a></nav>
+    <span class="ds-header__spacer"></span>
+    <div class="ds-header__actions">
+      <button class="ds-header__menu" aria-label="Abrir menú">☰</button>
+      <span class="ds-icon ds-icon--md" data-icon="account" role="img" aria-label="Mi cuenta"></span>
+      <span class="ds-icon ds-icon--md" data-icon="cart" role="img" aria-label="Carrito vacío"></span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="layout">
+      <!-- 1 · Confirmación -->
+      <section class="confirm" aria-labelledby="titulo">
+        <div class="ds-alert ds-alert--boxed ds-alert--success" role="status">
+          <span class="ds-icon" data-icon="success" aria-hidden="true"></span>
+          <span>Pedido confirmado y pagado. Te enviamos el comprobante a <span class="nowrap">andrea.rojas@gmail.com</span>.</span>
+        </div>
+        <h1 id="titulo" class="ds-h2">¡Gracias, Andrea!</h1>
+        <p class="ds-p-lg-500">Tu pedido <strong class="nowrap">N.º CH-284715</strong> llega hoy entre <strong class="nowrap">8:15 y 8:35 PM</strong>.</p>
+      </section>
+
+      <!-- 2 · Panel del cupón (solo con compra ≥ S/ 80.00) -->
+      <aside class="panel" aria-labelledby="cupon-titulo" data-show="invitado logueado cargando">
+        <div class="panel__head">
+          <p class="ds-label-sm">Regalo por tu compra</p>
+          <h2 id="cupon-titulo" class="ds-h5">Tu cupón para el próximo pedido</h2>
+        </div>
+
+        <div class="ds-alert ds-alert--boxed ds-alert--loading" role="status" data-show="cargando">
+          <span class="ds-icon" data-icon="loading" aria-hidden="true"></span>
+          <span>Estamos creando tu cupón personal. Tarda unos segundos; no cierres esta página.</span>
+        </div>
+
+        <div class="panel__head" data-show="invitado logueado">
+          <span class="ds-price ds-h2">S/ 15.00</span>
+          <p class="ds-p-md-600">de descuento en pedidos web desde <span class="nowrap">S/ 50.00</span></p>
+        </div>
+        <div class="code" data-show="invitado logueado">
+          <span class="ds-label-sm">Tu código</span>
+          <p id="codigo" class="ds-h4">ANDREA-7KQ2</p>
+        </div>
+        <dl class="facts ds-p-sm-600" data-show="invitado logueado">
+          <div><span class="ds-icon ds-icon--xs" data-icon="clock" aria-hidden="true"></span><dt>Vence</dt><dd><strong>Lun 30 · Nov</strong></dd></div>
+          <div><span class="ds-icon ds-icon--xs" data-icon="account" aria-hidden="true"></span><dt>Solo para</dt><dd>Andrea R.</dd></div>
+          <div><span class="ds-icon ds-icon--xs" data-icon="delivery" aria-hidden="true"></span><dt>Úsalo en</dt><dd>Delivery o recojo</dd></div>
+        </dl>
+        <button id="btn-copiar" class="ds-button ds-button--offset ds-button--red ds-button--lg ds-button--block" type="button" data-show="invitado logueado">
+          <span class="ds-icon" data-icon="checkmark" aria-hidden="true" hidden></span><span class="btn-label">Copiar código</span>
+        </button>
+        <div id="copiado" class="ds-alert ds-alert--success" role="status" hidden>
+          <span class="ds-icon" data-icon="success" aria-hidden="true"></span>
+          <span>Código copiado. Pégalo en el checkout de tu próximo pedido.</span>
+        </div>
+        <div id="copia-error" class="ds-alert ds-alert--error" role="alert" hidden>
+          <span class="ds-icon" data-icon="error" aria-hidden="true"></span>
+          <span>No pudimos copiar el código. Lo dejamos seleccionado: cópialo manualmente o búscalo en tu correo.</span>
+        </div>
+
+        <div class="recover" data-show="invitado cargando">
+          <h3 class="ds-label-sm">Cómo recuperarlo después</h3>
+          <ul class="ds-p-sm-500">
+            <li><span class="ds-icon ds-icon--xs" data-icon="checkmark" aria-hidden="true"></span><span>Llega a <strong>andrea.rojas@gmail.com</strong> con tu comprobante.</span></li>
+            <li><span class="ds-icon ds-icon--xs" data-icon="checkmark" aria-hidden="true"></span><span>En <strong>Seguir mi pedido</strong>, con el n.º CH-284715 y tu correo.</span></li>
+          </ul>
+          <div class="row"><a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Crear cuenta y guardarlo</a></div>
+        </div>
+        <div class="recover" data-show="logueado">
+          <h3 class="ds-label-sm">Guardado en tu cuenta</h3>
+          <p class="ds-p-sm-500">Lo encuentras en <strong>Mi cuenta › Mis cupones</strong> y te lo ofrecemos al pagar tu próximo pedido.</p>
+          <div class="row"><a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Ver mis cupones</a></div>
+        </div>
+
+        <div class="ds-accordion" data-show="invitado logueado">
+          <details class="ds-accordion__item ds-accordion__item--ranch">
+            <summary>¿Cómo lo uso?</summary>
+            <div class="ds-accordion__body">Arma tu pedido en chilis.pe y pega el código en «Código de descuento» antes de pagar.</div>
+          </details>
+          <details class="ds-accordion__item ds-accordion__item--ranch">
+            <summary>Condiciones</summary>
+            <div class="ds-accordion__body">Un solo uso, hasta el lunes 30 de noviembre de 2026, en pedidos web desde S/ 50.00. Personal: solo funciona con andrea.rojas@gmail.com. No acumulable con otras promociones.</div>
+          </details>
+        </div>
+      </aside>
+
+      <!-- 3 · Detalle del pedido (solo lectura) -->
+      <section class="details" aria-labelledby="detalle">
+        <h2 id="detalle" class="ds-h5">Detalle del pedido</h2>
+        <dl class="meta ds-p-sm-500">
+          <div><dt class="ds-label-sm">N.º de pedido</dt><dd>CH-284715</dd></div>
+          <div><dt class="ds-label-sm">Entrega</dt><dd>Delivery · hoy, 8:15 – 8:35 PM</dd></div>
+          <div><dt class="ds-label-sm">Dirección</dt><dd>Av. Benavides 1245, Miraflores</dd></div>
+          <div><dt class="ds-label-sm">Pago</dt><dd>Visa terminada en 4821</dd></div>
+        </dl>
+        <div>
+          <div class="ds-cart-item" data-show="invitado logueado cargando">
+            <div class="ds-cart-item__image" role="img" aria-label="Foto de Big Mouth Bites"></div>
+            <div class="ds-cart-item__details"><p class="ds-cart-item__name">Big Mouth Bites</p><p class="ds-cart-item__mods">+ Extra tocino · Cant. 1</p></div>
+            <span class="ds-price ds-price--sm">S/ 42.90</span>
+          </div>
+          <div class="ds-cart-item" data-show="invitado logueado cargando">
+            <div class="ds-cart-item__image" role="img" aria-label="Foto de Fajitas de pollo"></div>
+            <div class="ds-cart-item__details"><p class="ds-cart-item__name">Fajitas de pollo</p><p class="ds-cart-item__mods">− Sin cebolla · Cant. 1</p></div>
+            <span class="ds-price ds-price--sm">S/ 44.90</span>
+          </div>
+          <div class="ds-cart-item" data-show="sin-cupon">
+            <div class="ds-cart-item__image" role="img" aria-label="Foto de Oldtimer con queso"></div>
+            <div class="ds-cart-item__details"><p class="ds-cart-item__name">Oldtimer con queso</p><p class="ds-cart-item__mods">Cant. 1</p></div>
+            <span class="ds-price ds-price--sm">S/ 39.90</span>
+          </div>
+          <div class="ds-cart-item" data-show="sin-cupon">
+            <div class="ds-cart-item__image" role="img" aria-label="Foto de Papas fritas con queso"></div>
+            <div class="ds-cart-item__details"><p class="ds-cart-item__name">Papas fritas con queso</p><p class="ds-cart-item__mods">Cant. 1</p></div>
+            <span class="ds-price ds-price--sm">S/ 19.00</span>
+          </div>
+        </div>
+        <div class="totals ds-p-md-500">
+          <div class="totals__row"><span>Subtotal</span><span class="ds-price ds-price--sm" data-show="invitado logueado cargando">S/ 87.80</span><span class="ds-price ds-price--sm" data-show="sin-cupon">S/ 58.90</span></div>
+          <div class="totals__row"><span>Delivery</span><span class="ds-price ds-price--sm">S/ 8.60</span></div>
+          <div class="totals__row ds-p-lg-800"><span>Total pagado</span><span class="ds-price ds-price--lg" data-show="invitado logueado cargando">S/ 96.40</span><span class="ds-price ds-price--lg" data-show="sin-cupon">S/ 67.50</span></div>
+        </div>
+        <div class="row">
+          <button id="btn-seguir" class="ds-button ds-button--outlined ds-button--blue ds-button--lg" type="button" data-promote="sin-cupon">Seguir mi pedido</button>
+          <a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Volver al menú</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="proto" aria-label="Controles del prototipo">
+    <div class="proto__inner">
+      <p class="ds-label-sm">Solo prototipo · no forma parte del diseño · estado de la TYP</p>
+      <div class="ds-chip-row">
+        <button class="ds-chip" data-estado="invitado" aria-pressed="true">Sin sesión · S/ 96.40</button>
+        <button class="ds-chip" data-estado="logueado" aria-pressed="false">Con sesión · S/ 96.40</button>
+        <button class="ds-chip" data-estado="sin-cupon" aria-pressed="false">Compra menor a S/ 80.00</button>
+        <button class="ds-chip" data-estado="cargando" aria-pressed="false">Generando cupón</button>
+      </div>
+      <label class="ds-check"><input id="sim-error" type="checkbox"> Simular error al copiar</label>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var CODE = "ANDREA-7KQ2";
+  var ESTADOS = ["invitado", "logueado", "sin-cupon", "cargando"];
+  var btn = document.getElementById("btn-copiar");
+  var ok = document.getElementById("copiado");
+  var err = document.getElementById("copia-error");
+
+  function resetCopy() {
+    ok.hidden = true; err.hidden = true;
+    btn.querySelector(".btn-label").textContent = "Copiar código";
+    btn.querySelector(".ds-icon").hidden = true;
+  }
+
+  function setEstado(e) {
+    if (ESTADOS.indexOf(e) < 0) e = "invitado";
+    document.body.setAttribute("data-estado", e);
+    document.querySelectorAll("[data-show]").forEach(function (el) {
+      el.hidden = el.getAttribute("data-show").split(" ").indexOf(e) < 0;
+    });
+    document.querySelectorAll("[data-promote]").forEach(function (el) {
+      var on = el.getAttribute("data-promote").split(" ").indexOf(e) >= 0;
+      el.classList.toggle("ds-button--offset", on); el.classList.toggle("ds-button--red", on);
+      el.classList.toggle("ds-button--outlined", !on); el.classList.toggle("ds-button--blue", !on);
+    });
+    document.querySelectorAll(".proto .ds-chip").forEach(function (c) {
+      c.setAttribute("aria-pressed", String(c.getAttribute("data-estado") === e));
+    });
+    resetCopy();
+    var p = new URLSearchParams(location.search); p.set("estado", e);
+    history.replaceState(null, "", "?" + p.toString());
+  }
+
+  function writeClipboard(text) {
+    if (document.getElementById("sim-error").checked) return Promise.reject(new Error("simulado"));
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (res, rej) {
+      var t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select();
+      var done = false; try { done = document.execCommand("copy"); } catch (x) {}
+      t.remove(); done ? res() : rej(new Error("sin portapapeles"));
+    });
+  }
+
+  btn.addEventListener("click", function () {
+    writeClipboard(CODE).then(function () {
+      err.hidden = true; ok.hidden = false;
+      btn.querySelector(".btn-label").textContent = "Código copiado";
+      btn.querySelector(".ds-icon").hidden = false;
+    }, function () {
+      ok.hidden = true; err.hidden = false;
+      var r = document.createRange(); r.selectNodeContents(document.getElementById("codigo"));
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    });
+  });
+
+  document.querySelectorAll(".proto .ds-chip").forEach(function (c) {
+    c.addEventListener("click", function () { setEstado(c.getAttribute("data-estado")); });
+  });
+
+  setEstado(new URLSearchParams(location.search).get("estado") || "invitado");
+})();
+</script>
+</body>
+</html>

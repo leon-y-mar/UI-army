@@ -1,0 +1,282 @@
+<!--
+UI-ARMY
+version: v1
+producto: ecommerce
+hipotesis: Si el cupón es lo primero que se ve después del "gracias" (valor, código, vencimiento y "Copiar código" como única acción primaria), entonces sube el # de usuarios que copia el código y, por arrastre, el % que canjea cupones al mes, porque copiar se vuelve el siguiente paso obvio de la pantalla y el código queda en el portapapeles listo para el próximo checkout.
+referencia: https://mobbin.com/screens/bc3534ff-50e7-4945-a684-7eca87f52f97 (adidas) · https://mobbin.com/screens/9456204e-10bb-4c64-aa0b-b102ff5f9f4e (SHEIN) · https://mobbin.com/screens/5ba32e11-9c1a-490b-bb62-2e4fbf93b2c1 (Squarespace)
+patron-base: No hay patrón TYP en patterns.md. Parte del Ecommerce/Menú (Header + Cart Item) pero rompe el panel lateral: una sola columna centrada (6 de 12 columnas) con el cupón como bloque héroe arriba y el resumen del pedido debajo. En 390 la misma columna a ancho completo.
+trade-off: La confirmación del pedido (n.º, entrega, detalle) pasa a segundo plano y queda bajo el fold; quien llega ansioso por saber si su pago salió bien solo ve un banner de éxito arriba.
+componentes-ds: ds-header, ds-logo, ds-icon, ds-alert (banner success, inline success, inline error, boxed loading), ds-button (offset red lg, outlined blue lg, link blue sm), ds-price, ds-cart-item (solo lectura, sin ds-quantity), ds-accordion (ranch), ds-chip (solo controles del prototipo), ds-check (solo controles del prototipo), estilos de texto ds-h1/ds-h2/ds-h4/ds-h5/ds-label-sm/ds-p-*
+gaps-ds: Cupón/Ticket con copiar · feedback "copiado" (toast) · resumen de pedido de solo lectura · patrón TYP desktop + mobile 390 · ícono copiar/correo (ver solicitudes-ds.md, 2026-10-31 · S01-typ-cupon)
+revision-humana: Layout Mobile 390 del ecommerce (no existe en Figma) · imágenes placeholder en Cart Item · uso de Dirk (ds-price + ds-h1 en el valor del cupón) · íconos faltantes (copiar, correo) resueltos con texto
+-->
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v1 · TYP con cupón para el próximo pedido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="../../../design-system/prototype.js"></script>
+<link rel="stylesheet" href="../../../design-system/tokens.css">
+<link rel="stylesheet" href="../../../design-system/components.css">
+<style>
+  /* Solo layout de pantalla. Solo var(--…). Nunca reestilar clases ds-*. */
+  [hidden] { display: none !important; }
+  .screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .page { padding: var(--sp-24) var(--layout-margin) var(--sp-56); }
+  .grid { max-width: var(--layout-max-content); margin-inline: auto; display: grid; grid-template-columns: repeat(var(--layout-columns), minmax(0, 1fr)); column-gap: var(--layout-gutter); }
+  .col { grid-column: 3 / span 8; display: flex; flex-direction: column; gap: var(--sp-24); min-width: 0; }
+  .title { margin: 0; }
+  .nowrap { white-space: nowrap; }
+  .row { display: flex; }
+
+  /* Cupón compuesto (gap DS: no existe componente Cupón) */
+  .coupon { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-24); padding: var(--sp-24); background: var(--color-bg-surface-warm); border-radius: var(--br-16); }
+  .coupon__value { display: flex; flex-direction: column; justify-content: center; gap: var(--sp-8); }
+  .coupon__value p { margin: 0; }
+  .coupon__body { display: flex; flex-direction: column; gap: var(--sp-12); min-width: 0; }
+  .coupon__code { display: flex; flex-direction: column; gap: var(--sp-4); padding: var(--sp-12) var(--sp-16); background: var(--color-bg-canvas); border-radius: var(--br-8); }
+  .coupon__code-text { margin: 0; overflow-wrap: anywhere; user-select: all; }
+  .coupon__meta { display: flex; flex-wrap: wrap; gap: var(--sp-4) var(--sp-16); margin: 0; }
+  .coupon__meta div { display: flex; gap: var(--sp-4); align-items: center; }
+  .coupon__meta dt, .coupon__meta dd { margin: 0; }
+  .coupon__loading { grid-column: 1 / -1; }
+
+  .block { display: flex; flex-direction: column; gap: var(--sp-12); }
+  .block h2, .block p { margin: 0; }
+  .steps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-12); }
+  .steps li { display: flex; gap: var(--sp-12); align-items: flex-start; }
+  .order-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-12) var(--sp-24); margin: 0; }
+  .order-meta dt, .order-meta dd { margin: 0; }
+  .totals { display: flex; flex-direction: column; gap: var(--sp-8); padding-top: var(--sp-8); }
+  .totals__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-16); }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--sp-16); align-items: center; }
+
+  .proto { padding: var(--sp-24) var(--layout-margin); background: var(--color-bg-surface); }
+  .proto__inner { max-width: var(--layout-max-content); margin-inline: auto; display: flex; flex-direction: column; gap: var(--sp-12); }
+  .proto p { margin: 0; }
+
+  /* Breakpoints = los de tokens.css (Tablet ≤1023, Mobile ≤599); var() no funciona en @media */
+  @media (max-width: 1023px) { .col { grid-column: 1 / -1; } }
+  @media (max-width: 599px) {
+    .page { padding-top: var(--sp-16); }
+    .col { grid-column: 1 / -1; gap: var(--sp-16); }
+    .coupon { grid-template-columns: minmax(0, 1fr); gap: var(--sp-12); padding: var(--sp-16); }
+    .order-meta { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
+</head>
+<body data-estado="invitado">
+<div class="screen">
+  <header class="ds-header">
+    <span class="ds-logo">Chili's</span>
+    <nav class="ds-header__nav" aria-label="Principal"><a href="#">Menú</a><a href="#">Locales</a><a href="#">Rewards</a><a href="#">Reservas</a></nav>
+    <span class="ds-header__spacer"></span>
+    <div class="ds-header__actions">
+      <button class="ds-header__menu" aria-label="Abrir menú">☰</button>
+      <span class="ds-icon ds-icon--md" data-icon="account" role="img" aria-label="Mi cuenta"></span>
+      <span class="ds-icon ds-icon--md" data-icon="cart" role="img" aria-label="Carrito vacío"></span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="grid">
+      <div class="col">
+        <div class="ds-alert ds-alert--banner ds-alert--success" role="status">
+          <span class="ds-icon" data-icon="success" aria-hidden="true"></span>
+          <span>Tu pedido <span class="nowrap">N.º CH-284715</span> está confirmado. Llega hoy entre <span class="nowrap">8:15 y 8:35 PM.</span></span>
+        </div>
+
+        <h1 class="title ds-h2">¡Gracias, Andrea!</h1>
+
+        <!-- CUPÓN · solo con compra ≥ S/ 80.00 -->
+        <section class="coupon" aria-labelledby="cupon-titulo" data-show="invitado logueado cargando">
+          <div class="coupon__loading" data-show="cargando">
+            <div class="ds-alert ds-alert--boxed ds-alert--loading" role="status">
+              <span class="ds-icon" data-icon="loading" aria-hidden="true"></span>
+              <span>Estamos creando tu cupón personal. Tarda unos segundos; no cierres esta página.</span>
+            </div>
+          </div>
+          <div class="coupon__value" data-show="invitado logueado">
+            <p id="cupon-titulo" class="ds-label-sm">Ganaste un cupón para tu próximo pedido</p>
+            <span class="ds-price ds-h1">S/ 15.00</span>
+            <p class="ds-p-md-600">de descuento en pedidos web desde <span class="nowrap">S/ 50.00</span></p>
+          </div>
+          <div class="coupon__body" data-show="invitado logueado">
+            <div class="coupon__code">
+              <span class="ds-label-sm">Tu código</span>
+              <p id="codigo" class="coupon__code-text ds-p-xl-800">ANDREA-7KQ2</p>
+            </div>
+            <dl class="coupon__meta ds-p-sm-600">
+              <div><span class="ds-icon ds-icon--xs" data-icon="clock" aria-hidden="true"></span><dt>Vence:</dt><dd><strong>Lun 30 · Nov</strong></dd></div>
+              <div><span class="ds-icon ds-icon--xs" data-icon="account" aria-hidden="true"></span><dt>Solo para:</dt><dd>Andrea R.</dd></div>
+            </dl>
+            <button id="btn-copiar" class="ds-button ds-button--offset ds-button--red ds-button--lg ds-button--block" type="button">
+              <span class="ds-icon" data-icon="checkmark" aria-hidden="true" hidden></span><span class="btn-label">Copiar código</span>
+            </button>
+            <div id="copiado" class="ds-alert ds-alert--success" role="status" hidden>
+              <span class="ds-icon" data-icon="success" aria-hidden="true"></span>
+              <span>Código copiado. Pégalo en el checkout de tu próximo pedido.</span>
+            </div>
+            <div id="copia-error" class="ds-alert ds-alert--error" role="alert" hidden>
+              <span class="ds-icon" data-icon="error" aria-hidden="true"></span>
+              <span>No pudimos copiar el código. Lo dejamos seleccionado: cópialo manualmente o búscalo en tu correo.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recuperación: cliente no logueado -->
+        <section class="block" aria-labelledby="recuperar" data-show="invitado cargando">
+          <h2 id="recuperar" class="ds-h5">¿Dónde encuentro mi cupón después?</h2>
+          <ol class="steps ds-p-md-500">
+            <li><span class="ds-icon" data-icon="checkmark" aria-hidden="true"></span><span><strong>En tu correo:</strong> te lo enviamos a andrea.rojas@gmail.com junto con tu comprobante.</span></li>
+            <li><span class="ds-icon" data-icon="checkmark" aria-hidden="true"></span><span><strong>En Seguir mi pedido:</strong> ingresa tu n.º de pedido CH-284715 y tu correo; el cupón aparece debajo del detalle.</span></li>
+          </ol>
+          <div class="row"><a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Crear cuenta y guardar el cupón</a></div>
+        </section>
+
+        <!-- Recuperación: cliente logueado -->
+        <section class="block" aria-labelledby="guardado" data-show="logueado">
+          <h2 id="guardado" class="ds-h5">Ya está en tu cuenta</h2>
+          <p class="ds-p-md-500">Lo guardamos en <strong>Mi cuenta › Mis cupones</strong>. Al pagar tu próximo pedido aparece para aplicarlo con un toque.</p>
+          <div class="row"><a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Ver mis cupones</a></div>
+        </section>
+
+        <div class="ds-accordion" data-show="invitado logueado">
+          <details class="ds-accordion__item ds-accordion__item--ranch">
+            <summary>¿Cómo uso mi cupón?</summary>
+            <div class="ds-accordion__body">Arma tu pedido en chilis.pe, pega el código en el campo «Código de descuento» del checkout y el descuento se aplica antes de pagar.</div>
+          </details>
+          <details class="ds-accordion__item ds-accordion__item--ranch">
+            <summary>Condiciones</summary>
+            <div class="ds-accordion__body">Un solo uso. Válido hasta el lunes 30 de noviembre de 2026 en pedidos web desde S/ 50.00, para delivery o recojo. Es personal: solo funciona con el correo andrea.rojas@gmail.com. No acumulable con otras promociones.</div>
+          </details>
+        </div>
+
+        <!-- Resumen del pedido (solo lectura) -->
+        <section class="block" aria-labelledby="pedido">
+          <h2 id="pedido" class="ds-h5">Tu pedido CH-284715</h2>
+          <dl class="order-meta ds-p-sm-500">
+            <div><dt class="ds-label-sm">Entrega</dt><dd>Delivery · hoy, 8:15 – 8:35 PM</dd></div>
+            <div><dt class="ds-label-sm">Dirección</dt><dd>Av. Benavides 1245, Miraflores</dd></div>
+            <div><dt class="ds-label-sm">Pago</dt><dd>Visa terminada en 4821</dd></div>
+            <div><dt class="ds-label-sm">Comprobante</dt><dd>Enviado a andrea.rojas@gmail.com</dd></div>
+          </dl>
+          <div>
+            <div class="ds-cart-item" data-show="invitado logueado cargando">
+              <div class="ds-cart-item__image" role="img" aria-label="Foto de Big Mouth Bites"></div>
+              <div class="ds-cart-item__details"><p class="ds-cart-item__name">Big Mouth Bites</p><p class="ds-cart-item__mods">+ Extra tocino · Cant. 1</p></div>
+              <span class="ds-price ds-price--sm">S/ 42.90</span>
+            </div>
+            <div class="ds-cart-item" data-show="invitado logueado cargando">
+              <div class="ds-cart-item__image" role="img" aria-label="Foto de Fajitas de pollo"></div>
+              <div class="ds-cart-item__details"><p class="ds-cart-item__name">Fajitas de pollo</p><p class="ds-cart-item__mods">− Sin cebolla · Cant. 1</p></div>
+              <span class="ds-price ds-price--sm">S/ 44.90</span>
+            </div>
+            <div class="ds-cart-item" data-show="sin-cupon">
+              <div class="ds-cart-item__image" role="img" aria-label="Foto de Oldtimer con queso"></div>
+              <div class="ds-cart-item__details"><p class="ds-cart-item__name">Oldtimer con queso</p><p class="ds-cart-item__mods">Cant. 1</p></div>
+              <span class="ds-price ds-price--sm">S/ 39.90</span>
+            </div>
+            <div class="ds-cart-item" data-show="sin-cupon">
+              <div class="ds-cart-item__image" role="img" aria-label="Foto de Papas fritas con queso"></div>
+              <div class="ds-cart-item__details"><p class="ds-cart-item__name">Papas fritas con queso</p><p class="ds-cart-item__mods">Cant. 1</p></div>
+              <span class="ds-price ds-price--sm">S/ 19.00</span>
+            </div>
+          </div>
+          <div class="totals ds-p-md-500">
+            <div class="totals__row"><span>Subtotal</span><span class="ds-price ds-price--sm" data-show="invitado logueado cargando">S/ 87.80</span><span class="ds-price ds-price--sm" data-show="sin-cupon">S/ 58.90</span></div>
+            <div class="totals__row"><span>Delivery</span><span class="ds-price ds-price--sm">S/ 8.60</span></div>
+            <div class="totals__row ds-p-lg-800"><span>Total pagado</span><span class="ds-price ds-price--lg" data-show="invitado logueado cargando">S/ 96.40</span><span class="ds-price ds-price--lg" data-show="sin-cupon">S/ 67.50</span></div>
+          </div>
+          <div class="actions">
+            <button id="btn-seguir" class="ds-button ds-button--outlined ds-button--blue ds-button--lg" type="button" data-promote="sin-cupon">Seguir mi pedido</button>
+            <a href="#" class="ds-button ds-button--link ds-button--blue ds-button--sm">Volver al menú</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="proto" aria-label="Controles del prototipo">
+    <div class="proto__inner">
+      <p class="ds-label-sm">Solo prototipo · no forma parte del diseño · estado de la TYP</p>
+      <div class="ds-chip-row">
+        <button class="ds-chip" data-estado="invitado" aria-pressed="true">Sin sesión · S/ 96.40</button>
+        <button class="ds-chip" data-estado="logueado" aria-pressed="false">Con sesión · S/ 96.40</button>
+        <button class="ds-chip" data-estado="sin-cupon" aria-pressed="false">Compra menor a S/ 80.00</button>
+        <button class="ds-chip" data-estado="cargando" aria-pressed="false">Generando cupón</button>
+      </div>
+      <label class="ds-check"><input id="sim-error" type="checkbox"> Simular error al copiar</label>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var CODE = "ANDREA-7KQ2";
+  var ESTADOS = ["invitado", "logueado", "sin-cupon", "cargando"];
+  var btn = document.getElementById("btn-copiar");
+  var ok = document.getElementById("copiado");
+  var err = document.getElementById("copia-error");
+
+  function resetCopy() {
+    ok.hidden = true; err.hidden = true;
+    btn.querySelector(".btn-label").textContent = "Copiar código";
+    btn.querySelector(".ds-icon").hidden = true;
+  }
+
+  function setEstado(e) {
+    if (ESTADOS.indexOf(e) < 0) e = "invitado";
+    document.body.setAttribute("data-estado", e);
+    document.querySelectorAll("[data-show]").forEach(function (el) {
+      el.hidden = el.getAttribute("data-show").split(" ").indexOf(e) < 0;
+    });
+    document.querySelectorAll("[data-promote]").forEach(function (el) {
+      var on = el.getAttribute("data-promote").split(" ").indexOf(e) >= 0;
+      el.classList.toggle("ds-button--offset", on); el.classList.toggle("ds-button--red", on);
+      el.classList.toggle("ds-button--outlined", !on); el.classList.toggle("ds-button--blue", !on);
+    });
+    document.querySelectorAll(".proto .ds-chip").forEach(function (c) {
+      c.setAttribute("aria-pressed", String(c.getAttribute("data-estado") === e));
+    });
+    resetCopy();
+    var p = new URLSearchParams(location.search); p.set("estado", e);
+    history.replaceState(null, "", "?" + p.toString());
+  }
+
+  function writeClipboard(text) {
+    if (document.getElementById("sim-error").checked) return Promise.reject(new Error("simulado"));
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (res, rej) {
+      var t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select();
+      var done = false; try { done = document.execCommand("copy"); } catch (x) {}
+      t.remove(); done ? res() : rej(new Error("sin portapapeles"));
+    });
+  }
+
+  btn.addEventListener("click", function () {
+    writeClipboard(CODE).then(function () {
+      err.hidden = true; ok.hidden = false;
+      btn.querySelector(".btn-label").textContent = "Código copiado";
+      btn.querySelector(".ds-icon").hidden = false;
+    }, function () {
+      ok.hidden = true; err.hidden = false;
+      var r = document.createRange(); r.selectNodeContents(document.getElementById("codigo"));
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    });
+  });
+
+  document.querySelectorAll(".proto .ds-chip").forEach(function (c) {
+    c.addEventListener("click", function () { setEstado(c.getAttribute("data-estado")); });
+  });
+  document.getElementById("btn-seguir").addEventListener("click", function () {});
+
+  setEstado(new URLSearchParams(location.search).get("estado") || "invitado");
+})();
+</script>
+</body>
+</html>
