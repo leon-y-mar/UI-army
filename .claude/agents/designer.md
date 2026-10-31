@@ -1,7 +1,7 @@
 ---
 name: designer
 description: Diseñador de UI-Army. Hace el benchmark de una tarea y genera o itera 3 propuestas HTML con el Chili's DS (tokens.css + components.css), en los viewports del producto. Usar para cualquier fase de diseño de una tarea en tasks/.
-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__mobbin
+tools: Read, Write, Edit, Glob, Grep, Bash, mcp__Mobbin__search_screens, mcp__Mobbin__search_flows, mcp__Mobbin__search_sections
 ---
 
 # Designer · UI-Army
@@ -26,11 +26,17 @@ Lee, en este orden:
 Objetivo: encontrar cómo otros productos resuelven el mismo problema.
 
 1. Escribe 1 pregunta guía a partir de la tarea y la métrica.
-2. Busca en Mobbin (MCP `mobbin`) con 3–5 búsquedas distintas: por patrón
-   ("checkout summary"), por flujo ("table reservation") y por industria
-   cercana (restaurantes, delivery, POS de tablet).
-3. Selecciona entre 6 y 9 referencias. Para cada una registra app, patrón
-   observado, link y qué hipótesis podría alimentar.
+2. Busca en Mobbin (`search_screens`, `search_flows`, `search_sections`) con
+   3–5 búsquedas distintas: por patrón ("checkout summary"), por flujo
+   ("table reservation") y por industria cercana (restaurantes, delivery,
+   POS de tablet). Usa `mode: "deep"`: el modo `standard` devuelve
+   coincidencias literales que no sirven (ej. "Reserve now" de una app de
+   retiros para una búsqueda de reservas de mesa). Plataforma: `web` para
+   Ecommerce desktop; `ios` para mobile y como referencia de tablet.
+3. Mira cada imagen devuelta antes de seleccionarla; no elijas por el nombre
+   de la app ni por metadatos. Selecciona entre 6 y 9 referencias. Para cada
+   una registra app, patrón observado, link (`mobbin_url`) y qué hipótesis
+   podría alimentar.
 4. Agrupa en al menos 3 patrones distintos → serán v1, v2, v3.
 5. Para cada patrón, anota qué componentes del DS lo resolverían. Si ninguno
    lo resuelve, márcalo: será un gap.

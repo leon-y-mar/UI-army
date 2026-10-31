@@ -45,14 +45,23 @@ Requiere plan Pro, Max o Team, o asiento Enterprise con acceso a
 Claude Code. Si usas una cuenta de empresa, tu admin puede tenerlo
 desactivado.
 
+### Mobbin: conector, no `.mcp.json`
+En Claude Code en la nube, el proxy de red bloquea `api.mobbin.com`, así que el
+servidor declarado en `.mcp.json` no levanta. Mobbin funciona si conectas
+**Mobbin como conector en tu cuenta de claude.ai** (Settings → Connectors);
+la sesión lo recibe como herramientas `mcp__Mobbin__*`. Cada persona que corra
+el harness necesita su propio conector. Sin él, el designer usa el fallback
+(pedirte referencias). `.mcp.json` se mantiene para uso local de Claude Code.
+
 ## 3 · Primera ejecución (prueba de humo)
 
 Antes de una tarea real, en una sesión nueva escribe:
 
 ```
 Lee CLAUDE.md. Dime: 1) qué subagentes ves en .claude/agents,
-2) si el MCP de Mobbin está disponible, 3) si puedes correr
-npx playwright para screenshots. No ejecutes ninguna tarea.
+2) si las herramientas mcp__Mobbin__* están disponibles (haz una búsqueda
+de prueba), 3) si `node scripts/render.js` puede abrir Chromium.
+No ejecutes ninguna tarea.
 ```
 
 Anota las respuestas. Si Mobbin o el render no están disponibles,

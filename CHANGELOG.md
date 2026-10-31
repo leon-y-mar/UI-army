@@ -4,6 +4,16 @@ Cada cambio a CLAUDE.md, agentes, rúbrica, comandos o design system sube versi�
 `log.json` registra con qué versión se ejecutó cada tarea, para saber si una
 mejora vino del harness o de la tarea.
 
+## v0.2.1 · Estructura, render y Mobbin
+- Estructura de carpetas restaurada (la subida por web la había aplanado).
+- `scripts/render.js`: render con el Playwright del entorno, todas las
+  versiones × viewports × temas en una llamada; reporta scroll horizontal y
+  errores JS. Reemplaza `npx playwright install` en el evaluator.
+- Designer: herramientas `mcp__Mobbin__search_*` (antes `mcp__mobbin`, que no
+  coincidía con el conector), búsqueda en modo `deep` y revisión de cada imagen.
+- `docs/setup.md`: Mobbin entra como conector de claude.ai; `.mcp.json` no
+  funciona detrás del proxy de la nube.
+
 ## v0.2.0 · Chili's DS
 - `design-system/` generado desde Figma "Prueba - Chilis DS" v1.2.0:
   tokens.json, tokens.css (Light/Dark, Web/Tablet), components.css (26 componentes),

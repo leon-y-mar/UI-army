@@ -40,15 +40,20 @@ Copia la salida completa en la sección "Lint" de la evaluación.
 Si el brief pide Dark, repite con `theme=dark`.
 
 ```bash
-mkdir -p tasks/<id>/evaluations/shots
-npx --yes playwright@1 install chromium >/dev/null 2>&1
-npx --yes playwright@1 screenshot --viewport-size=820,1180 --full-page \
-  "file://$PWD/tasks/<id>/prototypes/v1.html?theme=light&device=tablet" \
-  tasks/<id>/evaluations/shots/iter-0N-v1-820.png
+node scripts/render.js <id> <N> <ecommerce|reservas|toma-de-pedido> light
+# Si el brief pide Dark:
+node scripts/render.js <id> <N> <producto> light,dark
 ```
-Repite por versión, viewport y tema. Mira las imágenes antes de puntuar.
+El script renderiza todas las versiones en los viewports del producto y guarda
+`tasks/<id>/evaluations/shots/iter-0N-<v>-<ancho>-<tema>.png`. Copia su salida
+en la evaluación: cada `[REVISAR] SCROLL-HORIZONTAL` es evidencia para
+"Plataforma" = 1, y cada `JS-ERROR` debe verificarse en el render.
+Mira las imágenes antes de puntuar.
 
-**Fallback:** si no se puede renderizar, evalúa leyendo el código y escribe
+No ejecutes `playwright install`: el entorno ya trae Chromium y otra versión
+no lo encuentra.
+
+**Fallback:** si el script imprime `SIN RENDER`, evalúa leyendo el código y escribe
 `MODO: sin render` al inicio. Sin render, "Plataforma" no puede pasar de 3.
 
 ### Paso 3 · Puntuación
