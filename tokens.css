@@ -1,0 +1,368 @@
+/* ==========================================================
+   UI-Army · Chili's DS · tokens.css
+   GENERADO desde Figma "Prueba - Chilis DS" v1.2.0 (leído 2026-10-31).
+   No editar a mano: regenerar con docs/actualizar-ds.md.
+
+   Modos:
+   - Tema:    <html data-theme="dark">   (default Light)
+   - Sizing:  <html data-device="tablet"> (default Web)
+   - Layout y tipografía: media queries (mobile < 600, tablet 600–1023, desktop >= 1024)
+
+   REGLA: en pantallas usar solo --color-*, --button-*, --sp-*, --br-*,
+   --bw-*, --size-*, --layout-*, --elevation-*, --motion-*.
+   Las variables --prim-* existen solo para alimentar a las semánticas.
+   ========================================================== */
+
+:root {
+  /* Primitives (NO usar en pantallas) */
+  --prim-brand-chilis-red: #ED1C24;
+  --prim-brand-chilis-red-aa: #E81B23;
+  --prim-brand-cilantro: #749E33;
+  --prim-brand-ranch: #EEECE7;
+  --prim-brand-thursday-night: #22235B;
+  --prim-brand-sunrise: #FFC60B;
+  --prim-gray-white: #FFFFFF;
+  --prim-gray-gray-1: #F8F7F5;
+  --prim-gray-gray-2: #F3F2EE;
+  --prim-gray-gray-3: #D4D2CD;
+  --prim-gray-gray-4: #A19F9A;
+  --prim-gray-gray-5: #3C3A35;
+  --prim-gray-black: #090702;
+  --prim-alert-success: #5E8029;
+  --prim-alert-warning: #FFA724;
+  --prim-alert-error: #BA161D;
+  --prim-ext-gray-6: #6F6D68;
+  --prim-ext-night-raised: #2E2F72;
+  --prim-ext-night-deep: #17184A;
+  --prim-ext-error-tint: #F7E7E8;
+  --prim-ext-error-light: #FF8A8E;
+  --prim-ext-scrim: #09070299;
+  --prim-illustration-skin: #F9AD73;
+  --prim-illustration-skin-highlight: #FED2A4;
+  --prim-illustration-wood: #AD6B3B;
+  --prim-illustration-chocolate-outline: #2A0909;
+  --prim-illustration-chocolate: #551818;
+  --prim-illustration-chocolate-drizzle: #68332F;
+  --prim-illustration-chocolate-glaze: #875D5A;
+
+  /* Color semántico · Light */
+  --color-bg-canvas: var(--prim-gray-white);
+  --color-bg-surface: var(--prim-gray-gray-1);
+  --color-bg-surface-warm: var(--prim-brand-ranch);
+  --color-bg-hover: var(--prim-gray-gray-2);
+  --color-bg-disabled: var(--prim-gray-gray-3);
+  --color-bg-inverse: var(--prim-brand-thursday-night);
+  --color-bg-brand: var(--prim-brand-chilis-red-aa);
+  --color-bg-accent: var(--prim-brand-sunrise);
+  --color-bg-night: var(--prim-brand-thursday-night);
+  --color-bg-error-subtle: var(--prim-ext-error-tint);
+  --color-bg-scrim: var(--prim-ext-scrim);
+  --color-text-primary: var(--prim-brand-thursday-night);
+  --color-text-secondary: var(--prim-gray-gray-5);
+  --color-text-placeholder: var(--prim-ext-gray-6);
+  --color-text-disabled: var(--prim-gray-gray-4);
+  --color-text-inverse: var(--prim-gray-white);
+  --color-text-on-brand: var(--prim-gray-white);
+  --color-text-on-accent: var(--prim-brand-thursday-night);
+  --color-text-on-night: var(--prim-gray-white);
+  --color-text-brand: var(--prim-alert-error);
+  --color-text-error: var(--prim-alert-error);
+  --color-text-success: var(--prim-alert-success);
+  --color-text-link: var(--prim-brand-thursday-night);
+  --color-border-default: var(--prim-ext-gray-6);
+  --color-border-strong: var(--prim-brand-thursday-night);
+  --color-border-divider: var(--prim-gray-gray-3);
+  --color-border-brand: var(--prim-brand-chilis-red-aa);
+  --color-border-error: var(--prim-alert-error);
+  --color-border-success: var(--prim-alert-success);
+  --color-border-warning: var(--prim-alert-warning);
+  --color-border-disabled: var(--prim-gray-gray-3);
+  --button-red-bg: var(--prim-brand-chilis-red-aa);
+  --button-red-text: var(--prim-gray-white);
+  --button-red-stroke: var(--prim-brand-thursday-night);
+  --button-red-shadow: var(--prim-brand-thursday-night);
+  --button-red-bg-hover: var(--prim-brand-thursday-night);
+  --button-red-text-hover: var(--prim-gray-white);
+  --button-blue-bg: var(--prim-brand-thursday-night);
+  --button-blue-text: var(--prim-gray-white);
+  --button-blue-stroke: var(--prim-brand-cilantro);
+  --button-blue-shadow: var(--prim-brand-cilantro);
+  --button-blue-bg-hover: var(--prim-brand-cilantro);
+  --button-blue-text-hover: var(--prim-brand-thursday-night);
+  --button-ranch-bg: var(--prim-brand-ranch);
+  --button-ranch-text: var(--prim-brand-thursday-night);
+  --button-ranch-stroke: var(--prim-brand-thursday-night);
+  --button-ranch-shadow: var(--prim-brand-thursday-night);
+  --button-ranch-bg-hover: var(--prim-brand-thursday-night);
+  --button-ranch-text-hover: var(--prim-brand-ranch);
+  --button-yellow-bg: var(--prim-brand-sunrise);
+  --button-yellow-text: var(--prim-brand-thursday-night);
+  --button-yellow-stroke: var(--prim-brand-thursday-night);
+  --button-yellow-shadow: var(--prim-brand-thursday-night);
+  --button-yellow-bg-hover: var(--prim-brand-thursday-night);
+  --button-yellow-text-hover: var(--prim-brand-sunrise);
+  --button-outlined-red-text: var(--prim-brand-chilis-red-aa);
+  --button-outlined-red-stroke: var(--prim-brand-chilis-red-aa);
+  --button-outlined-red-bg-hover: var(--prim-brand-chilis-red-aa);
+  --button-outlined-red-text-hover: var(--prim-gray-white);
+  --button-outlined-blue-text: var(--prim-brand-thursday-night);
+  --button-outlined-blue-stroke: var(--prim-brand-thursday-night);
+  --button-outlined-blue-bg-hover: var(--prim-brand-thursday-night);
+  --button-outlined-blue-text-hover: var(--prim-gray-white);
+  --button-link-red-text: var(--prim-brand-chilis-red-aa);
+  --button-link-red-line: var(--prim-brand-thursday-night);
+  --button-link-red-line-hover: var(--prim-brand-cilantro);
+  --button-link-blue-text: var(--prim-brand-thursday-night);
+  --button-link-blue-line: var(--prim-brand-chilis-red-aa);
+  --button-link-blue-line-hover: var(--prim-brand-cilantro);
+  --button-disabled-bg: var(--prim-gray-gray-3);
+  --button-disabled-text: var(--prim-gray-gray-4);
+  --button-disabled-stroke: var(--prim-gray-gray-3);
+  --color-icon-primary: var(--prim-brand-thursday-night);
+  --color-icon-success: var(--prim-alert-success);
+  --color-icon-error: var(--prim-alert-error);
+  --color-icon-warning: var(--prim-alert-warning);
+  --color-icon-disabled: var(--prim-gray-gray-4);
+  --color-icon-accent: var(--prim-brand-cilantro);
+  --color-icon-surface: var(--prim-brand-ranch);
+  --color-icon-surface-brand: var(--prim-brand-ranch);
+  --color-icon-surface-accent: var(--prim-brand-ranch);
+  --color-icon-surface-white: var(--prim-brand-ranch);
+  --color-illustration-skin: var(--prim-illustration-skin);
+  --color-illustration-skin-highlight: var(--prim-illustration-skin-highlight);
+  --color-illustration-wood: var(--prim-illustration-wood);
+  --color-illustration-chocolate-outline: var(--prim-illustration-chocolate-outline);
+  --color-illustration-chocolate: var(--prim-illustration-chocolate);
+  --color-illustration-chocolate-drizzle: var(--prim-illustration-chocolate-drizzle);
+  --color-illustration-chocolate-glaze: var(--prim-illustration-chocolate-glaze);
+  --color-illustration-outline: var(--prim-brand-thursday-night);
+  --color-illustration-red: var(--prim-brand-chilis-red-aa);
+  --color-illustration-yellow: var(--prim-brand-sunrise);
+  --color-illustration-green: var(--prim-brand-cilantro);
+  --color-illustration-white: var(--prim-gray-white);
+  --color-illustration-ranch: var(--prim-brand-ranch);
+  --color-illustration-cream: var(--prim-gray-gray-1);
+  --color-payment-bg: var(--prim-gray-white);
+  --color-payment-border: var(--prim-gray-gray-3);
+
+  /* Spacing */
+  --sp-0: 0px;
+  --sp-4: 4px;
+  --sp-8: 8px;
+  --sp-12: 12px;
+  --sp-16: 16px;
+  --sp-20: 20px;
+  --sp-24: 24px;
+  --sp-32: 32px;
+  --sp-40: 40px;
+  --sp-56: 56px;
+  --sp-80: 80px;
+  --sp-96: 96px;
+  --sp-120: 120px;
+
+  /* Radius */
+  --br-0: 0px;
+  --br-4: 4px;
+  --br-8: 8px;
+  --br-16: 16px;
+  --br-24: 24px;
+  --br-32: 32px;
+  --br-48: 48px;
+  --br-100: 100px;
+
+  /* Border width */
+  --bw-xsmall: 1px;
+  --bw-small: 2px;
+  --bw-medium: 3px;
+  --bw-large: 5px;
+  --bw-xlarge: 8px;
+
+  /* Sizing · Web */
+  --size-touch-min: 44px;
+  --size-icon: 32px;
+  --size-icon-sm: 24px;
+  --size-icon-xs: 16px;
+  --size-icon-lg: 48px;
+  --size-button-min-height-lg: 48px;
+  --size-button-min-height-sm: 40px;
+  --size-input-height: 48px;
+  --size-row-height: 56px;
+  --size-dropdown-option-height: 48px;
+  --size-modal-width-sm: 480px;
+  --size-modal-width-lg: 720px;
+
+  /* Layout · Desktop */
+  --layout-viewport-width: 1440px;
+  --layout-columns: 12;
+  --layout-gutter: 24px;
+  --layout-margin: 80px;
+  --layout-max-content: 1280px;
+
+  /* Tipografía */
+  --font-display: "Dirk", "Montserrat", system-ui, sans-serif; /* Dirk: licencia pendiente, fallback Montserrat 900 */
+  --font-body: "Montserrat", system-ui, sans-serif;
+  --type-h1-size: 64px;
+  --type-h2-size: 48px;
+  --type-h3-size: 28px;
+  --type-h4-size: 28px;
+  --type-h5-size: 20px;
+  --type-h6-size: 22px;
+  --type-pricing-large-size: 20px;
+  --type-pricing-medium-size: 18px;
+  --type-pricing-small-size: 16px;
+  --type-label-large-size: 16px;
+  --type-label-small-size: 12px;
+  --type-paragraph-xlarge-size: 28px;
+  --type-paragraph-large-size: 18px;
+  --type-paragraph-medium-size: 16px;
+  --type-paragraph-small-size: 14px;
+  --type-paragraph-xsmall-size: 12px;
+  --type-button-size: 14px;
+
+  /* Motion (extensión) */
+  --motion-duration-fast: 150ms;
+  --motion-duration-base: 250ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Elevation (extensión) */
+  --elevation-sm: 0 2px 8px 0 #09070214;
+  --elevation-md: 0 6px 16px 0 #0907021F;
+  --elevation-lg: 0 12px 32px 0 #09070229;
+}
+
+/* Color semántico · Dark (aplicar al contenedor, nunca duplicar componentes) */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--prim-brand-thursday-night);
+  --color-bg-surface: var(--prim-ext-night-raised);
+  --color-bg-surface-warm: var(--prim-ext-night-raised);
+  --color-bg-hover: var(--prim-ext-night-deep);
+  --color-bg-inverse: var(--prim-gray-white);
+  --color-bg-error-subtle: var(--prim-ext-night-raised);
+  --color-text-primary: var(--prim-gray-white);
+  --color-text-secondary: var(--prim-brand-ranch);
+  --color-text-placeholder: var(--prim-gray-gray-3);
+  --color-text-inverse: var(--prim-brand-thursday-night);
+  --color-text-brand: var(--prim-brand-sunrise);
+  --color-text-error: var(--prim-ext-error-light);
+  --color-text-success: var(--prim-brand-cilantro);
+  --color-text-link: var(--prim-gray-white);
+  --color-border-default: var(--prim-gray-gray-4);
+  --color-border-strong: var(--prim-gray-white);
+  --color-border-divider: var(--prim-brand-ranch);
+  --color-border-error: var(--prim-ext-error-light);
+  --color-border-success: var(--prim-brand-cilantro);
+  --button-red-stroke: var(--prim-gray-white);
+  --button-red-shadow: var(--prim-gray-white);
+  --button-red-bg-hover: var(--prim-gray-white);
+  --button-red-text-hover: var(--prim-brand-chilis-red-aa);
+  --button-blue-bg: var(--prim-gray-white);
+  --button-blue-text: var(--prim-brand-chilis-red-aa);
+  --button-blue-stroke: var(--prim-brand-chilis-red-aa);
+  --button-blue-shadow: var(--prim-gray-white);
+  --button-blue-bg-hover: var(--prim-brand-chilis-red-aa);
+  --button-blue-text-hover: var(--prim-gray-white);
+  --button-ranch-stroke: var(--prim-gray-white);
+  --button-ranch-shadow: var(--prim-gray-white);
+  --button-ranch-bg-hover: var(--prim-gray-white);
+  --button-ranch-text-hover: var(--prim-brand-thursday-night);
+  --button-yellow-bg: var(--prim-brand-thursday-night);
+  --button-yellow-text: var(--prim-brand-sunrise);
+  --button-yellow-stroke: var(--prim-brand-sunrise);
+  --button-yellow-shadow: var(--prim-brand-sunrise);
+  --button-yellow-bg-hover: var(--prim-brand-sunrise);
+  --button-yellow-text-hover: var(--prim-brand-thursday-night);
+  --button-outlined-red-text: var(--prim-gray-white);
+  --button-outlined-red-stroke: var(--prim-gray-white);
+  --button-outlined-red-bg-hover: var(--prim-gray-white);
+  --button-outlined-red-text-hover: var(--prim-brand-chilis-red-aa);
+  --button-outlined-blue-text: var(--prim-gray-white);
+  --button-outlined-blue-stroke: var(--prim-gray-white);
+  --button-outlined-blue-bg-hover: var(--prim-gray-white);
+  --button-outlined-blue-text-hover: var(--prim-brand-thursday-night);
+  --button-link-red-text: var(--prim-gray-white);
+  --button-link-red-line: var(--prim-brand-chilis-red-aa);
+  --button-link-blue-text: var(--prim-gray-white);
+  --color-icon-primary: var(--prim-brand-ranch);
+  --color-icon-success: var(--prim-brand-cilantro);
+  --color-icon-error: var(--prim-ext-error-light);
+  --color-icon-surface: var(--prim-brand-thursday-night);
+  --color-icon-surface-brand: var(--prim-brand-chilis-red-aa);
+  --color-icon-surface-accent: var(--prim-brand-sunrise);
+  --color-icon-surface-white: var(--prim-gray-white);
+}
+
+/* Sizing · Tablet (Reservas y Toma de pedido) */
+[data-device="tablet"] {
+  --size-touch-min: 48px;
+  --size-button-min-height-lg: 56px;
+  --size-button-min-height-sm: 48px;
+  --size-input-height: 56px;
+  --size-row-height: 64px;
+  --size-dropdown-option-height: 56px;
+  --size-modal-width-sm: 560px;
+}
+
+/* Layout · Tablet */
+@media (max-width: 1023px) {
+  :root {
+    --layout-viewport-width: 820px;
+    --layout-columns: 8;
+    --layout-gutter: 24px;
+    --layout-margin: 40px;
+    --layout-max-content: 740px;
+  }
+}
+/* Layout + tipografía · Mobile */
+@media (max-width: 599px) {
+  :root {
+    --layout-viewport-width: 390px;
+    --layout-columns: 4;
+    --layout-gutter: 16px;
+    --layout-margin: 16px;
+    --layout-max-content: 358px;
+    --type-h1-size: 50px;
+    --type-h2-size: 44px;
+  }
+}
+
+/* ===== Text styles (clases = estilos de texto de Figma) ===== */
+.ds-h1 { font-family: var(--font-display); font-weight: 900; font-size: var(--type-h1-size); line-height: 0.9; letter-spacing: 0.02em; text-transform: uppercase; } /* Headings/h1-desktop */
+.ds-h2 { font-family: var(--font-display); font-weight: 900; font-size: var(--type-h2-size); line-height: 0.92; letter-spacing: 0.02em; text-transform: uppercase; } /* Headings/h2-desktop */
+.ds-h3 { font-family: var(--font-body); font-weight: 800; font-size: 28px; line-height: 1.25; letter-spacing: 0em; } /* Headings/h3 */
+.ds-h4 { font-family: var(--font-display); font-weight: 900; font-size: 28px; line-height: 0.9; letter-spacing: 0.02em; } /* Headings/h4-desktop */
+.ds-h5 { font-family: var(--font-body); font-weight: 800; font-size: 20px; line-height: 1.4; letter-spacing: 0em; } /* Headings/h5-desktop */
+.ds-h6 { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.2; letter-spacing: 0.02em; } /* Headings/h6-desktop */
+.ds-pricing-lg { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.2; letter-spacing: 0.02em; } /* Pricing/pricing-large */
+.ds-pricing-md { font-family: var(--font-display); font-weight: 900; font-size: 18px; line-height: 1.2; letter-spacing: 0.02em; } /* Pricing/pricing-medium */
+.ds-pricing-sm { font-family: var(--font-display); font-weight: 900; font-size: 16px; line-height: 1.25; letter-spacing: 0.02em; } /* Pricing/pricing-small */
+.ds-label-lg { font-family: var(--font-body); font-weight: 700; font-size: 16px; line-height: 1.2; letter-spacing: 0em; text-transform: uppercase; } /* Labels/label-large */
+.ds-label-sm { font-family: var(--font-body); font-weight: 700; font-size: 12px; line-height: 1.2; letter-spacing: 0em; text-transform: uppercase; } /* Labels/label-small */
+.ds-button-label { font-family: var(--font-body); font-weight: 800; font-size: 14px; line-height: 1.2; letter-spacing: 0em; text-transform: uppercase; } /* Buttons/button-label */
+.ds-link-inline { font-family: var(--font-body); font-weight: 700; font-size: 16px; line-height: 1.4; letter-spacing: 0em; } /* Buttons/text-link-inline */
+.ds-p-xl-500 { font-family: var(--font-body); font-weight: 500; font-size: 28px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XLarge/500 Medium */
+.ds-p-xl-600 { font-family: var(--font-body); font-weight: 600; font-size: 28px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XLarge/600 Semibold */
+.ds-p-xl-700 { font-family: var(--font-body); font-weight: 700; font-size: 28px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XLarge/700 Bold */
+.ds-p-xl-800 { font-family: var(--font-body); font-weight: 800; font-size: 28px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XLarge/800 Extrabold */
+.ds-p-xl-700-upper { font-family: var(--font-body); font-weight: 700; font-size: 28px; line-height: 1.4; letter-spacing: 0em; text-transform: uppercase; } /* Paragraph XLarge/700 Bold Uppercase */
+.ds-p-lg-500 { font-family: var(--font-body); font-weight: 500; font-size: 18px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Large/500 Medium */
+.ds-p-lg-600 { font-family: var(--font-body); font-weight: 600; font-size: 18px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Large/600 Semibold */
+.ds-p-lg-700 { font-family: var(--font-body); font-weight: 700; font-size: 18px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Large/700 Bold */
+.ds-p-lg-800 { font-family: var(--font-body); font-weight: 800; font-size: 18px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Large/800 Extrabold */
+.ds-p-lg-700-upper { font-family: var(--font-body); font-weight: 700; font-size: 18px; line-height: 1.4; letter-spacing: 0em; text-transform: uppercase; } /* Paragraph Large/700 Bold Uppercase */
+.ds-p-md-500 { font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Medium/500 Medium */
+.ds-p-md-600 { font-family: var(--font-body); font-weight: 600; font-size: 16px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Medium/600 Semibold */
+.ds-p-md-700 { font-family: var(--font-body); font-weight: 700; font-size: 16px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Medium/700 Bold */
+.ds-p-md-800 { font-family: var(--font-body); font-weight: 800; font-size: 16px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Medium/800 Extrabold */
+.ds-p-md-700-upper { font-family: var(--font-body); font-weight: 700; font-size: 16px; line-height: 1.4; letter-spacing: 0em; text-transform: uppercase; } /* Paragraph Medium/700 Bold Uppercase */
+.ds-p-sm-500 { font-family: var(--font-body); font-weight: 500; font-size: 14px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Small/500 Medium */
+.ds-p-sm-600 { font-family: var(--font-body); font-weight: 600; font-size: 14px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Small/600 Semibold */
+.ds-p-sm-700 { font-family: var(--font-body); font-weight: 700; font-size: 14px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Small/700 Bold */
+.ds-p-sm-800 { font-family: var(--font-body); font-weight: 800; font-size: 14px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph Small/800 Extrabold */
+.ds-p-sm-700-upper { font-family: var(--font-body); font-weight: 700; font-size: 14px; line-height: 1.4; letter-spacing: 0em; text-transform: uppercase; } /* Paragraph Small/700 Bold Uppercase */
+.ds-p-sm-700-underline { font-family: var(--font-body); font-weight: 700; font-size: 14px; line-height: 1.4; letter-spacing: 0em; text-decoration: underline; } /* Paragraph Small/700 Bold Underline */
+.ds-p-xs-500 { font-family: var(--font-body); font-weight: 500; font-size: 12px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XSmall/500 Medium */
+.ds-p-xs-600 { font-family: var(--font-body); font-weight: 600; font-size: 12px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XSmall/600 Semibold */
+.ds-p-xs-700 { font-family: var(--font-body); font-weight: 700; font-size: 12px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XSmall/700 Bold */
+.ds-p-xs-800 { font-family: var(--font-body); font-weight: 800; font-size: 12px; line-height: 1.4; letter-spacing: 0em; } /* Paragraph XSmall/800 Extrabold */
+.ds-p-xs-700-upper { font-family: var(--font-body); font-weight: 700; font-size: 12px; line-height: 1.4; letter-spacing: 0em; text-transform: uppercase; } /* Paragraph XSmall/700 Bold Uppercase */
+.ds-p-xs-700-underline { font-family: var(--font-body); font-weight: 700; font-size: 12px; line-height: 1.4; letter-spacing: 0em; text-decoration: underline; } /* Paragraph XSmall/700 Bold Underline */

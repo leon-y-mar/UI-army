@@ -1,0 +1,35 @@
+<!--
+UI-ARMY
+version: v1
+producto: ecommerce | reservas | toma-de-pedido
+hipotesis: Si <cambio>, entonces <métrica> <sube/baja> porque <razón>.
+referencia: <link del benchmark>
+patron-base: <qué cambia respecto a design-system/patterns.md, o "sin cambios">
+trade-off: <qué se sacrifica>
+componentes-ds: <lista de componentes ds-* usados>
+gaps-ds: <necesidades registradas en solicitudes-ds.md, o "ninguno">
+revision-humana: <decisiones de la lista de guidelines.md que toca, o "ninguna">
+-->
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v1 · <tarea></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="../../../design-system/prototype.js"></script>
+<link rel="stylesheet" href="../../../design-system/tokens.css">
+<link rel="stylesheet" href="../../../design-system/components.css">
+<style>
+  /* Solo layout de pantalla. Solo var(--…). Nunca reestilar clases ds-*. */
+  .screen { min-height: 100vh; display: flex; flex-direction: column; }
+</style>
+</head>
+<body>
+<!-- Productos de mozos (reservas, toma-de-pedido): agrega data-device="tablet" en <html>. -->
+<div class="screen">
+</div>
+</body>
+</html>

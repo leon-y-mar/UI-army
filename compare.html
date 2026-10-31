@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI-Army · Comparador</title>
+<style>
+  :root { --ink:#1d2433; --muted:#5b6475; --line:#d9dde5; --bg:#f6f7f9; --sel:#2f4bd8; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 system-ui, sans-serif; color:var(--ink); background:var(--bg); }
+  header { display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; padding:16px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:2; }
+  h1 { font-size:16px; font-weight:600; margin:0 auto 0 0; }
+  .group { display:flex; border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+  .group button { border:0; background:#fff; padding:6px 12px; font:inherit; cursor:pointer; color:var(--muted); }
+  .group button + button { border-left:1px solid var(--line); }
+  .group button[aria-pressed="true"] { background:var(--sel); color:#fff; }
+  button:focus-visible, a:focus-visible { outline:2px solid var(--sel); outline-offset:2px; }
+  main { display:flex; gap:24px; padding:24px; overflow-x:auto; }
+  figure { margin:0; flex:0 0 auto; }
+  figcaption { display:flex; justify-content:space-between; gap:12px; font-size:13px; color:var(--muted); margin-bottom:8px; }
+  figcaption a { color:var(--sel); }
+  .frame { border:1px solid var(--line); background:#fff; overflow:hidden; }
+  iframe { border:0; display:block; transform-origin:0 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>UI-Army · Comparador</h1>
+  <div class="group" role="group" aria-label="Viewport">
+    <button data-vp="1440x900" aria-pressed="true">Desktop 1440</button>
+    <button data-vp="390x844" aria-pressed="false">Mobile 390</button>
+    <button data-vp="820x1180" aria-pressed="false">Tablet V 820</button>
+    <button data-vp="1180x820" aria-pressed="false">Tablet H 1180</button>
+  </div>
+  <div class="group" role="group" aria-label="Tema">
+    <button data-theme="light" aria-pressed="true">Light</button>
+    <button data-theme="dark" aria-pressed="false">Dark</button>
+  </div>
+  <div class="group" role="group" aria-label="Versiones">
+    <button data-v="all" aria-pressed="true">Todas</button>
+    <button data-v="v1" aria-pressed="false">v1</button>
+    <button data-v="v2" aria-pressed="false">v2</button>
+    <button data-v="v3" aria-pressed="false">v3</button>
+  </div>
+</header>
+<main id="stage"></main>
+<script>
+  /* Viewports de los productos (design-system/guidelines.md).
+     Tablet aplica Sizing Tablet vía ?device=tablet. */
+  var versions = ["v1", "v2", "v3"];
+  var state = { vp: "1440x900", theme: "light", v: "all" };
+  var params = new URLSearchParams(location.search);
+  if (params.get("vp")) state.vp = params.get("vp");
+  var stage = document.getElementById("stage");
+  function render() {
+    var parts = state.vp.split("x"), w = +parts[0], h = +parts[1];
+    var device = (w === 820 || w === 1180) ? "tablet" : "web";
+    var list = state.v === "all" ? versions : [state.v];
+    var avail = (stage.clientWidth - 48 - 24 * (list.length - 1)) / list.length;
+    var scale = Math.min(1, avail / w);
+    stage.innerHTML = list.map(function (v) {
+      var src = v + ".html?theme=" + state.theme + "&device=" + device;
+      return '<figure><figcaption><span>' + v + " · " + w + "×" + h + " · " + state.theme + (scale < 1 ? " · " + Math.round(scale * 100) + "%" : "") +
+        '</span><a href="' + src + '" target="_blank" rel="noopener">Abrir sola</a></figcaption>' +
+        '<div class="frame" style="width:' + (w * scale) + "px;height:" + (h * scale) + 'px">' +
+        '<iframe src="' + src + '" title="Versión ' + v + '" style="width:' + w + "px;height:" + h + "px;transform:scale(" + scale + ')"></iframe></div></figure>';
+    }).join("");
+  }
+  function bind(attr, key) {
+    document.querySelectorAll("[" + attr + "]").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute(attr) === state[key]);
+      b.onclick = function () {
+        state[key] = b.getAttribute(attr);
+        document.querySelectorAll("[" + attr + "]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+        render();
+      };
+    });
+  }
+  bind("data-vp", "vp"); bind("data-theme", "theme"); bind("data-v", "v");
+  addEventListener("resize", render);
+  render();
+</script>
+</body>
+</html>

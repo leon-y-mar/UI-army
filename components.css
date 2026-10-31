@@ -1,0 +1,263 @@
+/* ==========================================================
+   UI-Army · Chili's DS · components.css
+   Equivalente en HTML/CSS de los componentes publicados en Figma
+   "Prueba - Chilis DS" v1.2.0. Requiere tokens.css.
+
+   Equivale a "insertar una instancia": usa estas clases tal cual.
+   PROHIBIDO sobrescribir sus estilos en un prototipo (es un detach).
+   Para layout de pantalla, usa tus propias clases con tokens.
+
+   Marcas en comentarios:
+   [figma]   valor leído del componente en Figma
+   [aprox]   no estaba en la variante leída; aproximación a verificar
+   ========================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg-canvas); color: var(--color-text-primary); font-family: var(--font-body); }
+:focus-visible { outline: var(--bw-small) solid var(--color-border-strong); outline-offset: 2px; } /* guía: foco visible 2px */
+
+/* ---------- Icon (placeholder) ----------------------------------------
+   Los SVG de Icon/* no están exportados todavía. Usa <span class="ds-icon"
+   data-icon="cart" aria-hidden="true"></span> y declara el ícono como gap.
+   [aprox] glifos de texto solo para que el prototipo se entienda. */
+.ds-icon { display: inline-grid; place-items: center; width: var(--size-icon-sm); height: var(--size-icon-sm); flex: none; color: var(--color-icon-primary); font-family: var(--font-body); font-weight: 800; font-size: 16px; line-height: 1; border-radius: var(--br-4); }
+.ds-icon--xs { width: var(--size-icon-xs); height: var(--size-icon-xs); font-size: 12px; }
+.ds-icon--md { width: var(--size-icon); height: var(--size-icon); font-size: 20px; }
+.ds-icon--lg { width: var(--size-icon-lg); height: var(--size-icon-lg); font-size: 28px; }
+.ds-icon[data-glyph]::before { content: attr(data-glyph) !important; }
+:where(.ds-icon[data-icon]):empty::before { content: "◇"; }
+.ds-icon[data-icon="plus"]::before { content: "+"; }
+.ds-icon[data-icon="minus"]::before { content: "−"; }
+.ds-icon[data-icon="close"]::before { content: "×"; }
+.ds-icon[data-icon="checkmark"]::before, .ds-icon[data-icon="success"]::before { content: "✓"; }
+.ds-icon[data-icon="error"]::before, .ds-icon[data-icon="circle-x"]::before { content: "!"; }
+.ds-icon[data-icon="warning"]::before { content: "!"; }
+.ds-icon[data-icon="info"]::before, .ds-icon[data-icon="tooltip"]::before { content: "i"; }
+.ds-icon[data-icon="caret-outline-d"]::before { content: "▾"; }
+.ds-icon[data-icon="caret-outline-u"]::before { content: "▴"; }
+.ds-icon[data-icon="arrow-outline-l"]::before, .ds-icon[data-icon="arrow-circle-l"]::before { content: "←"; }
+.ds-icon[data-icon="arrow-outline-r"]::before, .ds-icon[data-icon="arrow-circle-r"]::before { content: "→"; }
+.ds-icon[data-icon="loading"]::before { content: "◌"; }
+
+/* ---------- Logo (placeholder) ---------- */
+.ds-logo { font-family: var(--font-display); font-weight: 900; font-size: 28px; color: var(--color-bg-brand); letter-spacing: 0.02em; } /* [aprox] reemplazar por Logo/Chilis */
+
+/* ---------- Button ----------------------------------------------------
+   Props: Style (offset|flat|outlined|link) × Color (red|blue|ranch|yellow)
+          × Size (lg|sm) × State (:hover | [disabled]).
+   outlined y link solo existen en red y blue.
+   <button class="ds-button ds-button--offset ds-button--red ds-button--lg">Checkout</button> */
+.ds-button { --_bg: transparent; --_text: inherit; --_stroke: transparent; --_shadow: transparent; --_bg-h: var(--_bg); --_text-h: var(--_text);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-8);
+  border: var(--bw-small) solid var(--_stroke); border-radius: var(--br-100);
+  background: var(--_bg); color: var(--_text); cursor: pointer; text-decoration: none;
+  font-family: var(--font-body); font-weight: 800; font-size: var(--type-button-size); line-height: 1.2; text-transform: uppercase; /* Buttons/button-label [figma] */
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard), color var(--motion-duration-fast) var(--motion-ease-standard); }
+.ds-button--lg { padding: var(--sp-16) var(--sp-24); min-height: var(--size-button-min-height-lg); } /* [figma] */
+.ds-button--sm { padding: var(--sp-12) var(--sp-16); min-height: var(--size-button-min-height-sm); } /* [figma] */
+.ds-button--block { width: 100%; }
+.ds-button--red    { --_bg: var(--button-red-bg);    --_text: var(--button-red-text);    --_stroke: var(--button-red-stroke);    --_shadow: var(--button-red-shadow);    --_bg-h: var(--button-red-bg-hover);    --_text-h: var(--button-red-text-hover); }
+.ds-button--blue   { --_bg: var(--button-blue-bg);   --_text: var(--button-blue-text);   --_stroke: var(--button-blue-stroke);   --_shadow: var(--button-blue-shadow);   --_bg-h: var(--button-blue-bg-hover);   --_text-h: var(--button-blue-text-hover); }
+.ds-button--ranch  { --_bg: var(--button-ranch-bg);  --_text: var(--button-ranch-text);  --_stroke: var(--button-ranch-stroke);  --_shadow: var(--button-ranch-shadow);  --_bg-h: var(--button-ranch-bg-hover);  --_text-h: var(--button-ranch-text-hover); }
+.ds-button--yellow { --_bg: var(--button-yellow-bg); --_text: var(--button-yellow-text); --_stroke: var(--button-yellow-stroke); --_shadow: var(--button-yellow-shadow); --_bg-h: var(--button-yellow-bg-hover); --_text-h: var(--button-yellow-text-hover); }
+.ds-button--offset { box-shadow: -4px 4px 0 0 var(--_shadow); } /* [figma] DROP_SHADOW -4,4 r0 */
+.ds-button--outlined { --_bg: transparent; }
+.ds-button--outlined.ds-button--red  { --_text: var(--button-outlined-red-text);  --_stroke: var(--button-outlined-red-stroke);  --_bg-h: var(--button-outlined-red-bg-hover);  --_text-h: var(--button-outlined-red-text-hover); }
+.ds-button--outlined.ds-button--blue { --_text: var(--button-outlined-blue-text); --_stroke: var(--button-outlined-blue-stroke); --_bg-h: var(--button-outlined-blue-bg-hover); --_text-h: var(--button-outlined-blue-text-hover); }
+.ds-button--link { --_bg: transparent; --_stroke: transparent; padding: 0; min-height: 0; border: 0; border-radius: 0; flex-direction: column; gap: 6px; }
+.ds-button--link.ds-button--sm { gap: var(--sp-4); }
+.ds-button--link::after { content: ""; display: block; width: 100%; height: 4px; background: var(--_line); } /* [figma] Underline 4px */
+.ds-button--link.ds-button--red  { --_text: var(--button-link-red-text);  --_line: var(--button-link-red-line);  --_text-h: var(--button-link-red-text);  --_line-h: var(--button-link-red-line-hover); }
+.ds-button--link.ds-button--blue { --_text: var(--button-link-blue-text); --_line: var(--button-link-blue-line); --_text-h: var(--button-link-blue-text); --_line-h: var(--button-link-blue-line-hover); }
+.ds-button:hover:not([disabled]):not([aria-disabled="true"]) { background: var(--_bg-h); color: var(--_text-h); }
+.ds-button--link:hover:not([disabled])::after { background: var(--_line-h); }
+.ds-button--link:hover:not([disabled]) { background: transparent; }
+.ds-button[disabled], .ds-button[aria-disabled="true"] { --_bg: var(--button-disabled-bg); --_text: var(--button-disabled-text); --_stroke: var(--button-disabled-stroke); box-shadow: none; cursor: not-allowed; }
+.ds-button--link[disabled] { --_bg: transparent; --_line: var(--button-disabled-stroke); }
+
+/* ---------- Input / Dropdown / OTP (campo) ---------- */
+.ds-field { display: flex; flex-direction: column; gap: var(--sp-4); width: 100%; } /* [figma] */
+.ds-field__label-row { display: flex; align-items: center; gap: var(--sp-8); }
+.ds-field__label { font-family: var(--font-body); font-weight: 700; font-size: 12px; line-height: 1.2; text-transform: uppercase; color: var(--color-text-primary); } /* Labels/label-small */
+.ds-field__required { background: var(--color-bg-accent); color: var(--color-text-on-accent); padding: 2px 6px; border-radius: var(--br-4); font-weight: 700; font-size: 12px; line-height: 1.4; text-transform: uppercase; } /* [figma] badge REQUIRED */
+.ds-field__control { display: flex; align-items: center; gap: var(--sp-4); width: 100%; min-height: var(--size-input-height); padding: var(--sp-12) var(--sp-16);
+  background: var(--color-bg-canvas); border: var(--bw-xsmall) solid var(--color-border-default); border-radius: var(--br-8);
+  font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 1.4; color: var(--color-text-primary); } /* [figma] */
+.ds-field__control::placeholder { color: var(--color-text-placeholder); }
+.ds-field__control:focus, .ds-field__control:focus-visible { outline: none; border-width: var(--bw-small); border-color: var(--color-border-strong); padding: calc(var(--sp-12) - 1px) calc(var(--sp-16) - 1px); } /* [aprox] Focused */
+.ds-field__helper { font-family: var(--font-body); font-weight: 500; font-size: 12px; line-height: 1.4; color: var(--color-text-secondary); } /* Paragraph XSmall/500 */
+.ds-field--destructive .ds-field__control { border-width: var(--bw-small); border-color: var(--color-border-error); } /* [figma] borde 2px */
+.ds-field--destructive .ds-field__helper { color: var(--color-text-error); }
+.ds-field__control:disabled { background: var(--color-bg-disabled); border-color: var(--color-border-disabled); color: var(--color-text-disabled); } /* [aprox] */
+select.ds-field__control { appearance: none; background-image: none; cursor: pointer; }
+.ds-field__select { position: relative; }
+.ds-field__select::after { content: "▾"; position: absolute; right: var(--sp-16); top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--color-icon-primary); } /* Icon/caret-outline-d */
+.ds-dropdown-option { display: flex; align-items: center; min-height: var(--size-dropdown-option-height); padding: var(--sp-12) var(--sp-16); background: var(--color-bg-canvas); font-weight: 500; font-size: 16px; color: var(--color-text-primary); cursor: pointer; }
+.ds-dropdown-option:hover { background: var(--color-bg-hover); } /* [aprox] */
+.ds-dropdown-option[aria-selected="true"] { background: var(--color-bg-hover); font-weight: 700; } /* [aprox] */
+.ds-otp { display: flex; gap: var(--sp-8); }
+.ds-otp__cell { flex: 1; min-width: 0; min-height: var(--size-input-height); padding: var(--sp-8); text-align: center; border: var(--bw-xsmall) solid var(--color-border-default); border-radius: var(--br-8); background: var(--color-bg-canvas); font-family: var(--font-body); font-weight: 700; font-size: 18px; color: var(--color-text-primary); } /* [figma] celda; texto [aprox] */
+.ds-field--destructive .ds-otp__cell { border-width: var(--bw-small); border-color: var(--color-border-error); }
+.ds-password-strength { display: flex; flex-direction: column; gap: var(--sp-8); }
+.ds-password-strength__bar { display: flex; gap: var(--sp-4); }
+.ds-password-strength__bar span { flex: 1; height: 6px; border-radius: var(--br-100); background: var(--color-border-divider); } /* [figma] */
+.ds-password-strength[data-level="weak"] .ds-password-strength__bar span:nth-child(-n+1) { background: var(--color-border-error); }   /* [aprox] */
+.ds-password-strength[data-level="medium"] .ds-password-strength__bar span:nth-child(-n+2) { background: var(--color-border-warning); } /* [aprox] */
+.ds-password-strength[data-level="strong"] .ds-password-strength__bar span { background: var(--color-border-success); }              /* [aprox] */
+.ds-password-strength__hint { display: flex; gap: var(--sp-4); align-items: center; font-weight: 500; font-size: 12px; line-height: 1.4; color: var(--color-text-secondary); }
+
+/* ---------- Checkbox / Radio / Toggle ----------
+   <label class="ds-check"><input type="checkbox"> Extra queso</label> */
+.ds-check { display: inline-flex; align-items: center; gap: var(--sp-12); font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 1.4; color: var(--color-text-primary); cursor: pointer; min-height: var(--size-touch-min); } /* [figma] gap 12 */
+.ds-check input { appearance: none; margin: 0; flex: none; width: 24px; height: 24px; border: var(--bw-small) solid var(--color-border-strong); background: var(--color-bg-canvas); display: grid; place-items: center; cursor: pointer; } /* [aprox] dibujo del ícono */
+.ds-check input[type="checkbox"] { border-radius: var(--br-4); }
+.ds-check input[type="radio"] { border-radius: var(--br-100); }
+.ds-check input:checked { background: var(--color-bg-inverse); }
+.ds-check input[type="checkbox"]:checked::after { content: "✓"; color: var(--color-text-inverse); font-size: 16px; font-weight: 800; line-height: 1; }
+.ds-check input[type="radio"]:checked { background: var(--color-bg-canvas); }
+.ds-check input[type="radio"]:checked::after { content: ""; width: 12px; height: 12px; border-radius: var(--br-100); background: var(--color-bg-inverse); }
+.ds-check input[role="switch"] { width: 40px; height: 24px; border-radius: var(--br-100); position: relative; display: block; }
+.ds-check input[role="switch"]::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: var(--br-100); background: var(--color-border-strong); transition: transform var(--motion-duration-fast) var(--motion-ease-standard); }
+.ds-check input[role="switch"]:checked { background: var(--color-bg-inverse); }
+.ds-check input[role="switch"]:checked::after { transform: translateX(16px); background: var(--color-text-inverse); }
+.ds-check:has(input:disabled) { color: var(--color-text-disabled); cursor: not-allowed; }
+.ds-check input:disabled { border-color: var(--color-border-disabled); background: var(--color-bg-disabled); }
+
+/* ---------- Segmented ---------- */
+.ds-segmented { display: inline-flex; }
+.ds-segmented__item { padding: var(--sp-12) var(--sp-24); background: var(--color-bg-canvas); color: var(--color-text-primary); border: var(--bw-small) solid var(--color-border-strong); margin-left: calc(var(--bw-small) * -1); font-family: var(--font-body); font-weight: 800; font-size: var(--type-button-size); line-height: 1.2; text-transform: uppercase; cursor: pointer; min-height: var(--size-touch-min); } /* [figma] */
+.ds-segmented__item:first-child { margin-left: 0; border-radius: var(--br-100) 0 0 var(--br-100); } /* [aprox] Position=Start */
+.ds-segmented__item:last-child { border-radius: 0 var(--br-100) var(--br-100) 0; }                /* [aprox] Position=End */
+.ds-segmented__item[aria-pressed="true"] { background: var(--color-bg-accent); color: var(--color-text-on-accent); } /* Documentation: navy sobre accent */
+
+/* ---------- Arrow Button ---------- */
+.ds-arrow-button { width: 48px; height: 48px; border-radius: var(--br-100); border: var(--bw-small) solid var(--color-border-strong); background: var(--color-bg-canvas); color: var(--color-icon-primary); display: inline-grid; place-items: center; cursor: pointer; } /* [figma] 48px; estilo [aprox] */
+.ds-arrow-button:hover { background: var(--color-bg-hover); }
+
+/* ---------- Alert ----------
+   Type: success|warning|error|loading · Style: inline|boxed|banner
+   El estado NUNCA solo con color: siempre ícono + texto. */
+.ds-alert { display: flex; align-items: flex-start; gap: var(--sp-12); font-family: var(--font-body); font-weight: 600; font-size: 16px; line-height: 1.4; color: var(--color-text-primary); } /* [figma] Paragraph Medium/600 */
+.ds-alert--boxed, .ds-alert--banner { padding: var(--sp-12) var(--sp-16); border: var(--bw-small) solid var(--_b, var(--color-border-strong)); border-radius: var(--br-8); background: var(--_bg, var(--color-bg-surface)); } /* [figma] */
+.ds-alert--banner { width: 100%; }
+.ds-alert--success { --_b: var(--color-border-success); --_bg: var(--color-bg-surface); } /* fondo [aprox]: solo existe bg/error-subtle */
+.ds-alert--warning { --_b: var(--color-border-warning); --_bg: var(--color-bg-surface); } /* borde ámbar es decorativo (1.94:1) */
+.ds-alert--error   { --_b: var(--color-border-error);   --_bg: var(--color-bg-error-subtle); } /* [figma] */
+.ds-alert--loading { --_b: var(--color-border-strong);  --_bg: var(--color-bg-surface); }
+.ds-alert--success .ds-icon { color: var(--color-icon-success); }
+.ds-alert--warning .ds-icon { color: var(--color-icon-warning); }
+.ds-alert--error .ds-icon { color: var(--color-icon-error); }
+
+/* ---------- Modal ---------- */
+.ds-scrim { position: fixed; inset: 0; background: var(--color-bg-scrim); display: grid; place-items: center; padding: var(--sp-16); }
+.ds-modal { position: relative; display: flex; gap: var(--sp-24); padding: var(--sp-24); background: var(--color-bg-canvas); border-radius: var(--br-8); width: min(100%, 640px); box-shadow: var(--elevation-lg); } /* [figma] Image Left 640 */
+.ds-modal--image-top { flex-direction: column; width: min(100%, var(--size-modal-width-sm)); }
+.ds-modal--image-right { flex-direction: row-reverse; }
+.ds-modal__image { flex: none; width: 240px; aspect-ratio: 1; background: var(--color-bg-surface-warm); border: var(--bw-small) solid var(--color-border-strong); border-radius: var(--br-8); } /* placeholder de foto */
+.ds-modal--image-top .ds-modal__image { width: 100%; aspect-ratio: 16/9; }
+.ds-modal__content { display: flex; flex-direction: column; gap: var(--sp-16); }
+.ds-modal__title { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 28px; line-height: 0.9; letter-spacing: 0.02em; color: var(--color-text-primary); } /* Headings/h4-desktop */
+.ds-modal__body { margin: 0; font-weight: 500; font-size: 14px; line-height: 1.4; color: var(--color-text-primary); }
+.ds-modal__actions { display: flex; flex-wrap: wrap; gap: var(--sp-12); }
+.ds-modal__close { position: absolute; top: var(--sp-12); right: var(--sp-12); background: none; border: 0; cursor: pointer; min-width: var(--size-touch-min); min-height: var(--size-touch-min); color: var(--color-icon-primary); }
+@media (max-width: 599px) { .ds-modal { flex-direction: column; } .ds-modal__image { width: 100%; aspect-ratio: 16/9; } }
+
+/* ---------- Accordion Item ---------- [aprox] estructura no leída en detalle */
+.ds-accordion { display: flex; flex-direction: column; gap: var(--sp-8); }
+.ds-accordion__item { border-radius: var(--br-8); overflow: hidden; }
+.ds-accordion__item--navy { background: var(--color-bg-night); color: var(--color-text-on-night); }
+.ds-accordion__item--ranch { background: var(--color-bg-surface-warm); color: var(--color-text-primary); }
+.ds-accordion__item summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: var(--sp-16); padding: var(--sp-16) var(--sp-24); min-height: var(--size-row-height); cursor: pointer; font-weight: 800; font-size: 20px; line-height: 1.4; }
+.ds-accordion__item summary::-webkit-details-marker { display: none; }
+.ds-accordion__item summary::after { content: "▾"; }
+.ds-accordion__item[open] summary::after { content: "▴"; }
+.ds-accordion__body { padding: 0 var(--sp-24) var(--sp-16); font-weight: 500; font-size: 16px; line-height: 1.4; }
+
+/* ---------- Chip ---------- */
+.ds-chip-row { display: flex; flex-wrap: wrap; gap: var(--sp-12); }
+.ds-chip { display: inline-flex; align-items: center; padding: var(--sp-8) var(--sp-20); min-height: 40px; border: var(--bw-small) solid var(--color-border-strong); border-radius: var(--br-100); background: var(--color-bg-canvas); color: var(--color-text-primary); font-family: var(--font-body); font-weight: 700; font-size: 14px; line-height: 1.4; cursor: pointer; } /* [figma] */
+.ds-chip[aria-pressed="true"], .ds-chip[aria-selected="true"] { background: var(--color-bg-inverse); color: var(--color-text-inverse); }
+
+/* ---------- Header (Ecommerce) ---------- */
+.ds-header { display: flex; align-items: center; gap: var(--sp-24); padding: var(--sp-16) var(--sp-40); min-height: 72px; background: var(--color-bg-canvas); border-bottom: var(--bw-xsmall) solid var(--color-border-divider); } /* [figma] Desktop */
+.ds-header__nav { display: flex; gap: var(--sp-32); flex: 1; }
+.ds-header__nav a { color: var(--color-text-primary); text-decoration: none; font-weight: 700; font-size: 14px; } /* [aprox] estilo del link */
+.ds-header__actions { display: flex; gap: var(--sp-16); }
+.ds-header__menu { display: none; }
+@media (max-width: 599px) { .ds-header { padding: var(--sp-12) var(--sp-16); } .ds-header__nav { display: none; } .ds-header__menu { display: inline-grid; } .ds-header__spacer { flex: 1; } } /* [aprox] Breakpoint=Mobile */
+
+/* ---------- Quantity ----------
+   Visual 32px [figma]; área táctil ampliada a --size-touch-min (guía de accesibilidad). */
+.ds-quantity { display: inline-flex; align-items: center; gap: var(--sp-8); }
+.ds-quantity__btn { width: var(--size-touch-min); height: var(--size-touch-min); padding: 0; border: 0; background: none; display: grid; place-items: center; cursor: pointer; }
+.ds-quantity__btn::before { content: attr(data-glyph); display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--br-100); border: var(--bw-small) solid var(--color-border-strong); color: var(--color-icon-primary); font-weight: 800; font-size: 18px; line-height: 1; }
+.ds-quantity__btn--increase::before { background: var(--color-bg-accent); color: var(--color-text-on-accent); }
+.ds-quantity__value { min-width: 2ch; text-align: center; font-weight: 700; font-size: 18px; line-height: 1.4; } /* Paragraph Large/700 */
+
+/* ---------- Product Card ---------- */
+.ds-product-card { display: flex; flex-direction: column; background: var(--color-bg-canvas); border: var(--bw-xsmall) solid var(--color-border-divider); border-radius: var(--br-16); overflow: hidden; } /* [figma] 320 */
+.ds-product-card__image { height: 200px; background: var(--color-bg-surface-warm); }
+.ds-product-card__body { display: flex; flex-direction: column; gap: var(--sp-8); padding: var(--sp-16); flex: 1; }
+.ds-product-card__name { margin: 0; font-weight: 800; font-size: 20px; line-height: 1.4; text-transform: uppercase; color: var(--color-text-primary); } /* Headings/h5 */
+.ds-product-card__desc { margin: 0; font-weight: 500; font-size: 14px; line-height: 1.4; color: var(--color-text-secondary); }
+.ds-product-card__footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+
+/* Precio en soles: "S/ 39.90" con Dirk */
+.ds-price { font-family: var(--font-display); font-weight: 900; letter-spacing: 0.02em; color: var(--color-text-primary); white-space: nowrap; }
+.ds-price--sm { font-size: 16px; line-height: 1.25; } .ds-price--md { font-size: 18px; line-height: 1.2; } .ds-price--lg { font-size: 20px; line-height: 1.2; }
+
+/* ---------- Cart Item / Cart Summary ---------- */
+.ds-cart-item { display: flex; gap: var(--sp-16); padding: var(--sp-16) 0; background: var(--color-bg-canvas); border-bottom: var(--bw-xsmall) solid var(--color-border-divider); } /* [figma] */
+.ds-cart-item__image { flex: none; width: 88px; height: 88px; border-radius: var(--br-8); background: var(--color-bg-surface-warm); }
+.ds-cart-item__details { display: flex; flex-direction: column; gap: var(--sp-4); flex: 1; }
+.ds-cart-item__name { margin: 0; font-weight: 700; font-size: 16px; line-height: 1.4; }
+.ds-cart-item__mods { margin: 0; font-weight: 500; font-size: 12px; line-height: 1.4; color: var(--color-text-secondary); }
+.ds-cart-summary { display: flex; flex-direction: column; gap: var(--sp-12); padding: var(--sp-24); background: var(--color-bg-surface); border-radius: var(--br-16); } /* [figma] */
+.ds-cart-summary__row { display: flex; justify-content: space-between; font-weight: 500; font-size: 16px; line-height: 1.4; }
+.ds-cart-summary__row--total { font-weight: 800; font-size: 18px; }
+
+/* ---------- Date Cell / Time Slot (Reservas) ---------- */
+.ds-date-cell, .ds-time-slot { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: var(--color-bg-canvas); color: var(--color-text-primary); border: var(--bw-small) solid var(--color-border-strong); border-radius: var(--br-8); font-family: var(--font-body); cursor: pointer; } /* [figma] */
+.ds-date-cell { width: 88px; height: 96px; }
+.ds-date-cell__day { font-weight: 700; font-size: 12px; line-height: 1.4; text-transform: uppercase; }
+.ds-date-cell__num { font-weight: 800; font-size: 28px; line-height: 1.4; }
+.ds-time-slot { width: 120px; height: 56px; font-weight: 700; font-size: 18px; line-height: 1.4; }
+.ds-date-cell[aria-pressed="true"], .ds-time-slot[aria-pressed="true"] { background: var(--color-bg-inverse); color: var(--color-text-inverse); }
+.ds-date-cell:disabled, .ds-time-slot:disabled { background: var(--color-bg-disabled); border-color: var(--color-border-disabled); color: var(--color-text-disabled); cursor: not-allowed; }
+
+/* ---------- Party Size ---------- */
+.ds-party-size { display: inline-flex; align-items: center; gap: var(--sp-24); padding: var(--sp-16) var(--sp-24); border: var(--bw-small) solid var(--color-border-strong); border-radius: var(--br-100); background: var(--color-bg-canvas); } /* [figma] */
+.ds-party-size { align-self: flex-start; width: fit-content; }
+.ds-party-size .ds-quantity__btn { width: 48px; height: 48px; }
+.ds-party-size .ds-quantity__btn::before { width: 48px; height: 48px; font-size: 24px; } /* [figma] íconos 48 */
+.ds-party-size__value { font-family: var(--font-display); font-weight: 900; font-size: 28px; line-height: 0.9; } /* Headings/h4 */
+
+/* ---------- Reservation Summary ---------- */
+.ds-reservation-summary { display: flex; flex-direction: column; gap: var(--sp-16); padding: var(--sp-24); background: var(--color-bg-surface); border-radius: var(--br-16); } /* [figma] */
+.ds-reservation-summary__title { margin: 0; font-weight: 800; font-size: 20px; line-height: 1.4; text-transform: uppercase; }
+.ds-reservation-summary__row { display: flex; align-items: center; gap: var(--sp-12); }
+.ds-reservation-summary__label { flex: 1; font-weight: 700; font-size: 14px; line-height: 1.4; color: var(--color-text-secondary); }
+.ds-reservation-summary__value { font-weight: 700; font-size: 16px; line-height: 1.4; }
+
+/* ---------- Table Card (Toma de pedido) ----------
+   Status: free|occupied|reserved|bill. Siempre con etiqueta de texto. */
+.ds-table-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-4); width: 168px; aspect-ratio: 1; border: var(--bw-small) solid var(--_b); border-radius: var(--br-16); background: var(--_bg); color: var(--_t); cursor: pointer; font-family: var(--font-body); } /* [figma] */
+.ds-table-card--free     { --_bg: var(--color-bg-canvas);  --_b: var(--color-border-success); --_t: var(--color-text-success); }
+.ds-table-card--occupied { --_bg: var(--color-bg-brand);   --_b: var(--color-border-brand);   --_t: var(--color-text-on-brand); }
+.ds-table-card--reserved { --_bg: var(--color-bg-accent);  --_b: var(--color-border-strong);  --_t: var(--color-text-on-accent); }
+.ds-table-card--bill     { --_bg: var(--color-bg-inverse); --_b: var(--color-border-strong);  --_t: var(--color-text-inverse); }
+.ds-table-card__caption { font-weight: 700; font-size: 12px; line-height: 1.4; text-transform: uppercase; }
+.ds-table-card__number { font-family: var(--font-display); font-weight: 900; font-size: var(--type-h2-size); line-height: 0.92; letter-spacing: 0.02em; }
+.ds-table-card__meta { display: flex; align-items: center; gap: var(--sp-4); font-weight: 700; font-size: 14px; }
+.ds-table-card__status { font-weight: 800; font-size: 12px; line-height: 1.4; }
+
+/* ---------- Order Item ---------- */
+.ds-order-item { display: flex; flex-direction: column; gap: var(--sp-8); padding: var(--sp-16); background: var(--color-bg-canvas); border-bottom: var(--bw-xsmall) solid var(--color-border-divider); } /* [figma] */
+.ds-order-item__main { display: flex; align-items: center; gap: var(--sp-16); }
+.ds-order-item__name { flex: 1; margin: 0; font-weight: 700; font-size: 18px; line-height: 1.4; }
+.ds-order-item__mods { display: flex; flex-direction: column; gap: var(--sp-4); margin: 0; padding: 0; list-style: none; font-weight: 500; font-size: 14px; line-height: 1.4; color: var(--color-text-secondary); } /* prefijo + o − obligatorio */
+
+/* ---------- Action Bar ---------- */
+.ds-action-bar { display: flex; align-items: center; gap: var(--sp-16); padding: var(--sp-16) var(--sp-24); background: var(--color-bg-canvas); border-top: var(--bw-xsmall) solid var(--color-border-strong); } /* [figma]; grosor del borde [aprox] */
+.ds-action-bar__total { flex: 1; display: flex; flex-direction: column; }
+.ds-action-bar__caption { font-weight: 700; font-size: 12px; line-height: 1.4; text-transform: uppercase; color: var(--color-text-secondary); }

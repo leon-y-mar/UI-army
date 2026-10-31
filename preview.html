@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chili's DS · Preview de componentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="prototype.js"></script>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  .pv { max-width: var(--layout-max-content); margin: 0 auto; padding: var(--sp-40) var(--layout-margin); display: flex; flex-direction: column; gap: var(--sp-56); }
+  .pv-bar { display: flex; gap: var(--sp-12); flex-wrap: wrap; align-items: center; }
+  .pv section { display: flex; flex-direction: column; gap: var(--sp-16); }
+  .pv-row { display: flex; flex-wrap: wrap; gap: var(--sp-16); align-items: center; }
+  .pv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sp-24); }
+  .pv-swatch { display: flex; flex-direction: column; gap: var(--sp-4); width: 140px; }
+  .pv-swatch i { display: block; height: 56px; border-radius: var(--br-8); border: var(--bw-xsmall) solid var(--color-border-divider); }
+  .pv-note { color: var(--color-text-secondary); }
+</style>
+</head>
+<body>
+<main class="pv">
+  <header class="pv-bar">
+    <h1 class="ds-h2" style="margin:0;flex:1">Chili's DS · Preview</h1>
+    <a class="ds-button ds-button--outlined ds-button--blue ds-button--sm" href="?theme=light">Light</a>
+    <a class="ds-button ds-button--outlined ds-button--blue ds-button--sm" href="?theme=dark">Dark</a>
+    <a class="ds-button ds-button--outlined ds-button--blue ds-button--sm" href="?device=tablet">Tablet</a>
+  </header>
+  <p class="ds-p-md-500 pv-note">Úsala para comparar contra Figma. Los elementos marcados [aprox] en components.css son los que más conviene revisar.</p>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Color semántico</h2>
+    <div class="pv-row" id="swatches"></div>
+  </section>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Tipografía</h2>
+    <p class="ds-h1" style="margin:0">Nuestro menú</p>
+    <p class="ds-h2" style="margin:0">Nueva reserva</p>
+    <p class="ds-h3" style="margin:0">Heading h3</p>
+    <p class="ds-h5" style="margin:0">Original Big Mouth Burgers</p>
+    <p class="ds-p-md-500" style="margin:0">Paragraph Medium 500 · Four bite-sized burgers with our signature toppings.</p>
+    <p class="ds-label-sm" style="margin:0">Label small</p>
+    <p class="ds-price ds-price--lg" style="margin:0">S/ 39.90</p>
+  </section>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Button</h2>
+    <div class="pv-row">
+      <button class="ds-button ds-button--offset ds-button--red ds-button--lg">Checkout</button>
+      <button class="ds-button ds-button--flat ds-button--red ds-button--lg">Flat</button>
+      <button class="ds-button ds-button--outlined ds-button--red ds-button--lg">Cuenta</button>
+      <button class="ds-button ds-button--link ds-button--red ds-button--lg">Ver menú</button>
+      <button class="ds-button ds-button--offset ds-button--red ds-button--lg" disabled>Disabled</button>
+    </div>
+    <div class="pv-row">
+      <button class="ds-button ds-button--offset ds-button--blue ds-button--sm">Blue</button>
+      <button class="ds-button ds-button--offset ds-button--ranch ds-button--sm">Ranch</button>
+      <button class="ds-button ds-button--offset ds-button--yellow ds-button--sm">Yellow</button>
+      <button class="ds-button ds-button--outlined ds-button--blue ds-button--sm">Outlined blue</button>
+      <button class="ds-button ds-button--link ds-button--blue ds-button--sm">Link blue</button>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Forms</h2>
+    <div class="pv-grid">
+      <div class="ds-field">
+        <div class="ds-field__label-row"><label class="ds-field__label" for="n">Nombre</label><span class="ds-field__required">Required</span></div>
+        <input id="n" class="ds-field__control" placeholder="Tu nombre">
+        <span class="ds-field__helper">Como aparece en tu DNI</span>
+      </div>
+      <div class="ds-field ds-field--destructive">
+        <label class="ds-field__label" for="e">Correo</label>
+        <input id="e" class="ds-field__control" value="leomar@">
+        <span class="ds-field__helper"><span class="ds-icon ds-icon--xs" data-icon="error" aria-hidden="true"></span> Ingresa un correo válido</span>
+      </div>
+      <div class="ds-field">
+        <label class="ds-field__label" for="d">Local</label>
+        <div class="ds-field__select"><select id="d" class="ds-field__control"><option>Chili's Larcomar</option><option>Chili's Jockey Plaza</option></select></div>
+      </div>
+      <div class="ds-field">
+        <label class="ds-field__label">Código de verificación</label>
+        <div class="ds-otp"><input class="ds-otp__cell" maxlength="1" value="4"><input class="ds-otp__cell" maxlength="1" value="2"><input class="ds-otp__cell" maxlength="1"><input class="ds-otp__cell" maxlength="1"><input class="ds-otp__cell" maxlength="1"><input class="ds-otp__cell" maxlength="1"></div>
+        <span class="ds-field__helper">Ingresa el código de 6 dígitos</span>
+      </div>
+    </div>
+    <div class="pv-row">
+      <label class="ds-check"><input type="checkbox" checked> Extra queso</label>
+      <label class="ds-check"><input type="radio" name="r" checked> Delivery</label>
+      <label class="ds-check"><input type="radio" name="r"> Recojo</label>
+      <label class="ds-check"><input type="checkbox" role="switch" checked> Recibir promociones</label>
+    </div>
+    <div class="ds-segmented" role="group" aria-label="Tipo de pedido">
+      <button class="ds-segmented__item" aria-pressed="true">Delivery</button><button class="ds-segmented__item" aria-pressed="false">Recojo</button><button class="ds-segmented__item" aria-pressed="false">En local</button>
+    </div>
+    <div class="ds-password-strength" data-level="medium" style="max-width:416px">
+      <div class="ds-password-strength__bar"><span></span><span></span><span></span></div>
+      <span class="ds-password-strength__hint"><span class="ds-icon ds-icon--xs" data-icon="warning" aria-hidden="true"></span> Media · usa 8 o más caracteres, una mayúscula y un número</span>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Feedback</h2>
+    <div class="ds-alert"><span class="ds-icon" data-icon="success" aria-hidden="true"></span>Pedido enviado a cocina</div>
+    <div class="ds-alert ds-alert--boxed ds-alert--error"><span class="ds-icon" data-icon="error" aria-hidden="true"></span>No pudimos procesar el pago. Revisa los datos de tu tarjeta.</div>
+    <div class="ds-alert ds-alert--banner ds-alert--warning"><span class="ds-icon" data-icon="warning" aria-hidden="true"></span>El local cierra en 30 minutos.</div>
+  </section>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Ecommerce</h2>
+    <div class="ds-chip-row"><button class="ds-chip" aria-pressed="true">Hamburguesas</button><button class="ds-chip" aria-pressed="false">Fajitas</button><button class="ds-chip" aria-pressed="false">Postres</button></div>
+    <div class="pv-grid">
+      <article class="ds-product-card">
+        <div class="ds-product-card__image" role="img" aria-label="Foto del producto (placeholder)"></div>
+        <div class="ds-product-card__body">
+          <h3 class="ds-product-card__name">Original Big Mouth Burgers</h3>
+          <p class="ds-product-card__desc">Cuatro mini hamburguesas con nuestros toppings de la casa.</p>
+          <div class="ds-product-card__footer"><span class="ds-price ds-price--sm">S/ 39.90</span><button class="ds-button ds-button--offset ds-button--red ds-button--sm">Agregar</button></div>
+        </div>
+      </article>
+      <div>
+        <div class="ds-cart-item">
+          <div class="ds-cart-item__image"></div>
+          <div class="ds-cart-item__details">
+            <p class="ds-cart-item__name">Original Big Mouth Burgers</p>
+            <p class="ds-cart-item__mods">Sin cebolla · Extra queso</p>
+            <div class="ds-quantity"><button class="ds-quantity__btn" data-glyph="−" aria-label="Quitar uno"></button><span class="ds-quantity__value">1</span><button class="ds-quantity__btn ds-quantity__btn--increase" data-glyph="+" aria-label="Agregar uno"></button></div>
+          </div>
+          <span class="ds-price ds-price--sm">S/ 39.90</span>
+        </div>
+        <div class="ds-cart-summary">
+          <div class="ds-cart-summary__row"><span>Subtotal</span><span>S/ 79.80</span></div>
+          <div class="ds-cart-summary__row"><span>Delivery</span><span>S/ 8.00</span></div>
+          <div class="ds-cart-summary__row ds-cart-summary__row--total"><span>Total</span><span>S/ 87.80</span></div>
+          <button class="ds-button ds-button--offset ds-button--red ds-button--lg ds-button--block">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Reservas</h2>
+    <div class="pv-row">
+      <button class="ds-date-cell" aria-pressed="false"><span class="ds-date-cell__day">Jue</span><span class="ds-date-cell__num">14</span></button>
+      <button class="ds-date-cell" aria-pressed="true"><span class="ds-date-cell__day">Vie</span><span class="ds-date-cell__num">15</span></button>
+      <button class="ds-date-cell" disabled><span class="ds-date-cell__day">Dom</span><span class="ds-date-cell__num">17</span></button>
+    </div>
+    <div class="pv-row">
+      <button class="ds-time-slot" aria-pressed="false">7:00 PM</button><button class="ds-time-slot" aria-pressed="true">7:30 PM</button><button class="ds-time-slot" disabled>9:00 PM</button>
+    </div>
+    <div class="ds-party-size"><button class="ds-quantity__btn" data-glyph="−" aria-label="Quitar persona"></button><span class="ds-icon ds-icon--md" data-icon="users" data-glyph="👥" aria-hidden="true"></span><span class="ds-party-size__value">4</span><button class="ds-quantity__btn ds-quantity__btn--increase" data-glyph="+" aria-label="Agregar persona"></button></div>
+  </section>
+
+  <section>
+    <h2 class="ds-h4" style="margin:0">Toma de pedido</h2>
+    <div class="pv-row">
+      <button class="ds-table-card ds-table-card--free"><span class="ds-table-card__caption">Mesa</span><span class="ds-table-card__number">1</span><span class="ds-table-card__meta">4</span><span class="ds-table-card__status">Libre</span></button>
+      <button class="ds-table-card ds-table-card--occupied"><span class="ds-table-card__caption">Mesa</span><span class="ds-table-card__number">2</span><span class="ds-table-card__meta">4</span><span class="ds-table-card__status">Ocupada</span></button>
+      <button class="ds-table-card ds-table-card--reserved"><span class="ds-table-card__caption">Mesa</span><span class="ds-table-card__number">3</span><span class="ds-table-card__meta">4</span><span class="ds-table-card__status">Reservada</span></button>
+      <button class="ds-table-card ds-table-card--bill"><span class="ds-table-card__caption">Mesa</span><span class="ds-table-card__number">4</span><span class="ds-table-card__meta">4</span><span class="ds-table-card__status">Cuenta</span></button>
+    </div>
+    <div class="ds-action-bar">
+      <div class="ds-action-bar__total"><span class="ds-action-bar__caption">Total</span><span class="ds-price ds-price--md">S/ 87.80</span></div>
+      <button class="ds-button ds-button--outlined ds-button--red ds-button--lg">Cuenta</button>
+      <button class="ds-button ds-button--offset ds-button--red ds-button--lg">Enviar a cocina</button>
+    </div>
+  </section>
+</main>
+<script>
+  var names = ["bg-canvas","bg-surface","bg-surface-warm","bg-inverse","bg-brand","bg-accent","text-primary","text-secondary","border-default","border-strong","text-error","text-success"];
+  var box = document.getElementById("swatches");
+  names.forEach(function (n) {
+    var d = document.createElement("div"); d.className = "pv-swatch";
+    d.innerHTML = '<i style="background:var(--color-' + n + ')"></i><span class="ds-p-xs-500">color/' + n.replace("-", "/") + "</span>";
+    box.appendChild(d);
+  });
+</script>
+</body>
+</html>
